@@ -1,0 +1,7 @@
+{
+  "name": "socmed",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
