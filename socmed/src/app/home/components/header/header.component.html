@@ -41,7 +41,7 @@
             </ion-badge>
             <div>Notifications</div>
           </ion-col>
-          <ion-col size="auto">
+          <ion-col (click)="presentPopover($event)" size="auto">
             <ion-avatar>
               <ion-img src="../../../../assets/profile-img.jpg"></ion-img>
             </ion-avatar>
