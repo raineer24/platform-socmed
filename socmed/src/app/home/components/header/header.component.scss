@@ -6,6 +6,10 @@
 .linkedin-logo {
     font-size: 40px;
 }
+ion-col div {
+    font-size: 12px;
+    font-weight: 400;
+}
 ion-searchbar {
     box-shadow: none;
     transform: scale(0.8);
@@ -18,10 +22,6 @@ ion-col {
     width: 80px !important;
     text-align: center;
 }
- ion-searchbar {
-    .searchbar-input-container {
-      .searchbar-input {
-        box-shadow: none;
-      }
-    }
-  }
+ion-header {
+    border-bottom: 1px solid var(--ion-color-light-tint);
+}
