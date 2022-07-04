@@ -26,5 +26,7 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 .my-custom-class .popover-content {
- background-color: red;
+    width: 300px;
+    margin-top: 16px;
+    --box-shadow: none;
 }
