@@ -1,7 +1,7 @@
 <div>
   <div class="heading ion-padding">
     <ion-text>Create a post</ion-text>
-    <ion-button size="small" color="dark" fill="clear" shape="round">
+    <ion-button (click)="onDismiss()" size="small" color="dark" fill="clear" shape="round">
       <ion-icon slot="icon-only" size="large" name="close-outline"></ion-icon>
     </ion-button>
   </div>
@@ -25,8 +25,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <form class="ion -padding">
-    <ion-textarea required rows="5" type="text" name="body" placeholder="What's on your mind?">
+  <form #form="ngForm" (ngSubmit)="onPost()" class="ion -padding">
+    <ion-textarea ngModel required rows="5" type="text" name="body" placeholder="What's on your mind?">
 
     </ion-textarea>
     <ion-button fill="clear">Add hashtag</ion-button>
@@ -49,6 +49,7 @@
           <ion-text class="view-status">Anyone</ion-text>
         </ion-button>
       </div>
+      <ion-button [disabled]="!form.valid" tyoe="submit" class="ion-margin">Post</ion-button>
     </div>
   </form>
 </div>
