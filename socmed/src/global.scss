@@ -25,9 +25,15 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-.my-custom-class .popover-content {
+.my-custom-class ion-popover::part(content) {
     width: 300px;
     margin-top: 16px;
     --box-shadow: none;
     --background: none;
+}
+ion-item-divider {
+    border-bottom: 1px solid;
+}
+ion-button {
+    text-transform: initial;
 }

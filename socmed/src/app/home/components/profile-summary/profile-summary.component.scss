@@ -39,3 +39,13 @@ ion-card-header {
         box-shadow: inset 0px 0px 10px var(--ion-color-primary-contrast);
     }
 }
+.item-divider {
+    border-bottom: 1px solid var(---ion-color-light-tint);
+}
+ion-card-content div {
+    display: flex;
+    justify-content: space-between;
+}
+.connections {
+    margin-top: 8px;
+}
