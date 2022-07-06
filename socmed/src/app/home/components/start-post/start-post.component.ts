@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
 
@@ -18,7 +19,10 @@ export class StartPostComponent implements OnInit {
       cssClass: 'my-custom-class2',
     });
     await modal.present();
-    const { role } = await modal.onDidDismiss();
-    console.log(7, role);
+    const { data, role } = await modal.onDidDismiss();
+    if (data) {
+      console.log('data exists');
+    }
+    console.log('role: ', role, 'data: ', data);
   }
 }
