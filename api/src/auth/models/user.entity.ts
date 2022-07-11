@@ -4,7 +4,6 @@ import { Role } from './role.enum';
 
 @Entity('user')
 export class UserEntity {
-  [x: string]: any;
   @PrimaryGeneratedColumn()
   id: number;
 
