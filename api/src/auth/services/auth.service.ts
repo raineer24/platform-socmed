@@ -38,7 +38,7 @@ export class AuthService {
     );
   }
 
-  validateUser() {}
+  validateUser(email: string, password: string): Observable<User> {}
 
   login() {}
 }
