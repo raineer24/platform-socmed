@@ -37,4 +37,8 @@ export class AuthService {
       }),
     );
   }
+
+  validateUser() {}
+
+  login() {}
 }
