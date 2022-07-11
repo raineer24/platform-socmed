@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FeedPostEntity = void 0;
+const user_entity_1 = require("../../auth/models/user.entity");
 const typeorm_1 = require("typeorm");
 let FeedPostEntity = class FeedPostEntity {
 };
@@ -25,6 +26,10 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], FeedPostEntity.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.UserEntity, (userEntity) => userEntity.feedPosts),
+    __metadata("design:type", user_entity_1.UserEntity)
+], FeedPostEntity.prototype, "author", void 0);
 FeedPostEntity = __decorate([
     (0, typeorm_1.Entity)('feed_post')
 ], FeedPostEntity);

@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post()
+  @Post('register')
   register(@Body() user: User): Observable<User> {
     return this.authService.registerAccount(user);
   }

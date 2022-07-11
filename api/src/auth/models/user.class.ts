@@ -1,7 +1,7 @@
 import { FeedPost } from 'src/feed/models/post.interface';
 import { Role } from './role.enum';
 
-export class User {
+export interface User {
   id?: number;
   firstName?: string;
   lastName?: string;
@@ -9,7 +9,7 @@ export class User {
   email?: string;
   // @IsString()
   password?: string;
-  imagePath?: string;
+  //imagePath?: string;
   role?: Role;
   posts?: FeedPost[];
 }
