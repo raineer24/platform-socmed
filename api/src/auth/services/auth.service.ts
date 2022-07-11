@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { from, map, Observable, switchMap } from 'rxjs';
@@ -11,6 +12,7 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private jwtService: JwtService,
   ) {}
   hashPassword(password: string): Observable<string> {
     return from(bcrypt.hash(password, 12));
@@ -65,5 +67,15 @@ export class AuthService {
     );
   }
 
-  login() {}
+  login(user: User): Observable<string> {
+    const { email, password } = user;
+    return this.validateUser(email, password).pipe(
+      switchMap((user: User) => {
+        if (user) {
+          // create JWT - credentials
+          return from(this.jwtService.signAsync({ user }));
+        }
+      }),
+    );
+  }
 }
