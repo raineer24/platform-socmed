@@ -23,7 +23,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 export class FeedController {
   constructor(private feedService: FeedService) {}
 
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @UseGuards(JwtGuard, RolesGuard)
   @Post()
   create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
