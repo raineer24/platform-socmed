@@ -27,4 +27,14 @@ export class AuthService {
       )
       .pipe(take(1));
   }
+
+  login(email: string, password: string): Observable<{ token: string }> {
+    return this.http
+      .post<{ token: string }>(
+        `${environment.baseApiUrl}/auth/login`,
+        { email, password },
+        this.httpOptions
+      )
+      .pipe(take(1));
+  }
 }
