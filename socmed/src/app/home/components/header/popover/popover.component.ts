@@ -8,11 +8,11 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   styleUrls: ['./popover.component.scss'],
 })
 export class PopoverComponent implements OnInit {
-  constructor(authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {}
 
   onSignOut() {
-    console.log(1, 'OnSignOUt called!');
+    this.authService.logout();
   }
 }
