@@ -46,25 +46,6 @@ export class AuthService {
       )
       .pipe(take(1));
   }
-
-  // login(email: string, password: string): Observable<{ token: string }> {
-  //   return this.http
-  //     .post<{ token: string }>(
-  //       `${environment.baseApiUrl}/auth/login`,
-  //       { email, password },
-  //       this.httpOptions
-  //     )
-  //     .pipe(
-  //       take(1),
-  //       tap((response: { token: string }) => {
-  //         Storage.set({
-  //           key: 'token',
-  //           value: response.token,
-  //         });
-  //       })
-  //     );
-  // }
-
   login(email: string, password: string): Observable<{ token: string }> {
     return this.http
       .post<{ token: string }>(
@@ -83,5 +64,10 @@ export class AuthService {
           this.user$.next(decodedToken.user);
         })
       );
+  }
+  logout(): void {
+    this.user$.next(null);
+    Storage.remove({ key: 'token' });
+    this.router.navigateByUrl('/auth');
   }
 }
