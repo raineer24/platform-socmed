@@ -22,7 +22,8 @@ let FeedService = class FeedService {
     constructor(feedPostRepository) {
         this.feedPostRepository = feedPostRepository;
     }
-    createPost(feedPost) {
+    createPost(user, feedPost) {
+        feedPost.author = user;
         return (0, rxjs_1.from)(this.feedPostRepository.save(feedPost));
     }
     findAllPosts() {
