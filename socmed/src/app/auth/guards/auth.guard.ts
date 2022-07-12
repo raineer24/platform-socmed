@@ -32,7 +32,7 @@ export class AuthGuard implements CanLoad {
         if (isUserLoggedIn) {
           return of(isUserLoggedIn);
         }
-        // return this.authService.isToke
+        return this.authService.isTokenInStorage();
       }),
       tap((isUserLoggedIn: boolean) => {
         if (!isUserLoggedIn) {

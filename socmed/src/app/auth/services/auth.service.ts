@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, BehaviorSubject, of } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, from } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { NewUser } from '../models/newUser.model';
 import { Role, User } from '../models/user.model';
@@ -65,6 +65,33 @@ export class AuthService {
         })
       );
   }
+
+  isTokenInStorage(): Observable<boolean> {
+    return from(
+      Storage.get({
+        key: 'token',
+      })
+    ).pipe(
+      map((data: { value: string }) => {
+        if (!data || !data.value) {
+          return null;
+        }
+
+        const decodedToken: UserResponse = jwt_decode(data.value);
+        const jwtExpirationInMsSinceUnixEpoch = decodedToken.exp * 1000;
+        const isExpired =
+          new Date() > new Date(jwtExpirationInMsSinceUnixEpoch);
+        if (isExpired) {
+          return null;
+        }
+        if (decodedToken.user) {
+          this.user$.next(decodedToken.user);
+          return true;
+        }
+      })
+    );
+  }
+
   logout(): void {
     this.user$.next(null);
     Storage.remove({ key: 'token' });
