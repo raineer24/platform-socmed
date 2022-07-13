@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { Observable, from } from 'rxjs';
+import { Observable, from, map } from 'rxjs';
 
 import { FeedPostEntity } from '../models/post.entity';
 import { FeedPost } from '../models/post.interface';
@@ -37,5 +37,14 @@ export class FeedService {
 
   deletePost(id: number): Observable<DeleteResult> {
     return from(this.feedPostRepository.delete(id));
+  }
+
+  findUserById(id: number): Observable<User> {
+    return from(
+      this.feedPostRepository.findOne({id}, {relations: ['feedPosts']}),
+    ).pipe(map({user: User} => {
+      delete user.password;
+      return user;
+    }));
   }
 }
