@@ -41,10 +41,17 @@ export class FeedService {
 
   findUserById(id: number): Observable<User> {
     return from(
-      this.feedPostRepository.findOne({id}, {relations: ['feedPosts']}),
-    ).pipe(map({user: User} => {
-      delete user.password;
-      return user;
-    }));
+      this.feedPostRepository.findOne({
+        relations: ['feedPosts'],
+        where: {
+          id,
+        },
+      }),
+    ).pipe(
+      map((user: User) => {
+        delete user.password;
+        return user;
+      }),
+    );
   }
 }
