@@ -38,19 +38,13 @@ export class FeedService {
   deletePost(id: number): Observable<DeleteResult> {
     return from(this.feedPostRepository.delete(id));
   }
-
-  findUserById(id: number): Observable<User> {
+  findPostById(id: number): Observable<FeedPost> {
     return from(
       this.feedPostRepository.findOne({
-        relations: ['feedPosts'],
+        relations: ['author'],
         where: {
           id,
         },
-      }),
-    ).pipe(
-      map((user: User) => {
-        delete user.password;
-        return user;
       }),
     );
   }
