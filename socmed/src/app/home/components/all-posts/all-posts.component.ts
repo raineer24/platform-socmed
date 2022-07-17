@@ -7,6 +7,9 @@ import {
   ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { take } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { Post } from '../../models/post.interface';
 import { PostService } from '../../services/post.service';
 
@@ -25,10 +28,19 @@ export class AllPostsComponent implements OnInit {
   numberOfPosts = 5;
   skipPosts = 0;
 
-  constructor(private postsService: PostService) {}
+  userId$ = new BehaviorSubject<number>(null);
+
+  constructor(
+    private postsService: PostService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.getPosts(false, '');
+
+    this.authService.userId.pipe(take(1)).subscribe((userId: number) => {
+      this.userId$.next(userId);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {

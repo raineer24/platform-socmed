@@ -37,6 +37,12 @@ export class AuthService {
       .pipe(switchMap((user: User) => of(user.role)));
   }
 
+  get userId(): Observable<number> {
+    return this.user$
+      .asObservable()
+      .pipe(switchMap((user: User) => of(user.id)));
+  }
+
   register(newUser: NewUser): Observable<User> {
     return this.http
       .post<User>(
