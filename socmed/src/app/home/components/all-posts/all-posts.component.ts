@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/use-lifecycle-interface */
 import {
   Component,
   Input,
@@ -30,13 +31,14 @@ export class AllPostsComponent implements OnInit {
     this.getPosts(false, '');
   }
 
-  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnChanges(changes: SimpleChanges) {
     const postBody = changes.postBody.currentValue;
+
     if (!postBody) {
       return;
     }
     this.postsService.createPost(postBody).subscribe((post: Post) => {
+      console.log('postSERVICES');
       this.allLoadedPosts.unshift(post);
     });
   }

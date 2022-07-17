@@ -23,7 +23,8 @@ export class StartPostComponent implements OnInit {
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (!data) {
-      this.create.emit(data.post.body);
+      return;
     }
+    this.create.emit(data.post.body);
   }
 }

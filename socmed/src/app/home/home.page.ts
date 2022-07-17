@@ -10,6 +10,8 @@ export class HomePage {
   constructor() {}
 
   onCreatePost(body: string) {
+    console.log('create home');
     this.body = body;
+    console.log('this.bdy', this.body);
   }
 }
