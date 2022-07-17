@@ -26,7 +26,6 @@ export class ModalComponent implements OnInit {
       {
         post: {
           body,
-          createdAt: new Date(),
         },
       },
       'post'
