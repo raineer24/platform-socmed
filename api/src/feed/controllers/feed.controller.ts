@@ -30,6 +30,7 @@ export class FeedController {
   create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
     return this.feedService.createPost(req.user, feedPost);
   }
+  @UseGuards(JwtGuard)
   @Get()
   findSelected(
     @Query('take') take = 1,
