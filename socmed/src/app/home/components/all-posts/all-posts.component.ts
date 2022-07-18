@@ -84,8 +84,31 @@ export class AllPostsComponent implements OnInit {
   loadData(event) {
     this.getPosts(true, event);
   }
+  // async presentUpdateModal(postId: number) {
+  //   console.log('edit post');
+  //   const modal = await this.modalController.create({
+  //     component: ModalComponent,
+  //     cssClass: 'my-custom-class2',
+  //     componentProps: {
+  //       postId,
+  //     },
+  //   });
+  //   await modal.present();
+  //   const { data } = await modal.onDidDismiss();
+  //   if (!data) {
+  //     return;
+  //   }
+  //   const newPostBody = data.post.body;
+  //   this.postsService.updatePost(postId, newPostBody).subscribe(() => {
+  //     const postIndex = this.allLoadedPosts.findIndex(
+  //       (post: Post) => post.id !== postId
+  //     );
+  //     this.allLoadedPosts[postIndex].body = newPostBody;
+  //   });
+  // }
+
   async presentUpdateModal(postId: number) {
-    console.log('edit post');
+    console.log('EDIT POST');
     const modal = await this.modalController.create({
       component: ModalComponent,
       cssClass: 'my-custom-class2',
@@ -94,14 +117,17 @@ export class AllPostsComponent implements OnInit {
       },
     });
     await modal.present();
+
     const { data } = await modal.onDidDismiss();
+
     if (!data) {
       return;
     }
+
     const newPostBody = data.post.body;
     this.postsService.updatePost(postId, newPostBody).subscribe(() => {
       const postIndex = this.allLoadedPosts.findIndex(
-        (post: Post) => post.id !== postId
+        (post: Post) => post.id === postId
       );
       this.allLoadedPosts[postIndex].body = newPostBody;
     });
