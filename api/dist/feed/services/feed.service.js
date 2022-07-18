@@ -30,15 +30,27 @@ let FeedService = class FeedService {
         return (0, rxjs_1.from)(this.feedPostRepository.find());
     }
     findPosts(take = 10, skip = 0) {
-        return (0, rxjs_1.from)(this.feedPostRepository.findAndCount({ take, skip }).then(([posts]) => {
-            return posts;
-        }));
+        return (0, rxjs_1.from)(this.feedPostRepository
+            .createQueryBuilder('post')
+            .innerJoinAndSelect('post.author', 'author')
+            .orderBy('post.createdAt', 'DESC')
+            .take(take)
+            .skip(skip)
+            .getMany());
     }
     updatePost(id, feedPost) {
         return (0, rxjs_1.from)(this.feedPostRepository.update(id, feedPost));
     }
     deletePost(id) {
         return (0, rxjs_1.from)(this.feedPostRepository.delete(id));
+    }
+    findPostById(id) {
+        return (0, rxjs_1.from)(this.feedPostRepository.findOne({
+            relations: ['author'],
+            where: {
+                id,
+            },
+        }));
     }
 };
 FeedService = __decorate([

@@ -11,4 +11,5 @@ export declare class FeedService {
     findPosts(take?: number, skip?: number): Observable<FeedPost[]>;
     updatePost(id: number, feedPost: FeedPost): Observable<UpdateResult>;
     deletePost(id: number): Observable<DeleteResult>;
+    findPostById(id: number): Observable<FeedPost>;
 }

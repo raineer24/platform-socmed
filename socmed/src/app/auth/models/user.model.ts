@@ -1,3 +1,5 @@
+import { Post } from 'src/app/home/models/post.interface';
+
 export type Role = 'admin' | 'premium' | 'user';
 
 export interface User {
@@ -7,5 +9,5 @@ export interface User {
   email?: string;
   role?: Role;
   // imagePath?: string;
-  //posts?: Post[];
+  posts?: Post[];
 }

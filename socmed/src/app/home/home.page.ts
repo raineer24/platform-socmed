@@ -6,7 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-
+  body = '';
   constructor() {}
 
+  onCreatePost(body: string) {
+    console.log('create home');
+    this.body = body;
+    console.log('this.bdy', this.body);
+  }
 }

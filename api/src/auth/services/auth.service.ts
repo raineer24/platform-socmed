@@ -78,4 +78,20 @@ export class AuthService {
       }),
     );
   }
+
+  findUserById(id: number): Observable<User> {
+    return from(
+      this.userRepository.findOne({
+        relations: ['feedPosts'],
+        where: {
+          id,
+        },
+      }),
+    ).pipe(
+      map((user: User) => {
+        delete user.password;
+        return user;
+      }),
+    );
+  }
 }
