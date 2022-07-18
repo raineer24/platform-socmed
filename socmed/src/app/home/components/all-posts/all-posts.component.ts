@@ -12,6 +12,7 @@ import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Post } from '../../models/post.interface';
 import { PostService } from '../../services/post.service';
+import { ModalComponent } from '../start-post/modal/modal.component';
 
 @Component({
   selector: 'app-all-posts',
@@ -29,6 +30,7 @@ export class AllPostsComponent implements OnInit {
   skipPosts = 0;
 
   userId$ = new BehaviorSubject<number>(null);
+  modalController: any;
 
   constructor(
     private postsService: PostService,
@@ -83,7 +85,26 @@ export class AllPostsComponent implements OnInit {
     this.getPosts(true, event);
   }
   async presentUpdateModal(postId: number) {
-    console.log('Edit post', postId);
+    console.log('edit post');
+    const modal = await this.modalController.create({
+      component: ModalComponent,
+      cssClass: 'my-custom-class2',
+      componentProps: {
+        postId,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    if (!data) {
+      return;
+    }
+    const newPostBody = data.post.body;
+    this.postsService.updatePost(postId, newPostBody).subscribe(() => {
+      const postIndex = this.allLoadedPosts.findIndex(
+        (post: Post) => post.id !== postId
+      );
+      this.allLoadedPosts[postIndex].body = newPostBody;
+    });
   }
 
   deletePost(postId: number) {

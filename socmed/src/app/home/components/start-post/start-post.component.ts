@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
@@ -10,6 +10,8 @@ import { ModalComponent } from './modal/modal.component';
 })
 export class StartPostComponent implements OnInit {
   @Output() create: EventEmitter<any> = new EventEmitter();
+
+  @Input() postId?: number;
   constructor(public modalController: ModalController) {}
 
   ngOnInit() {}
