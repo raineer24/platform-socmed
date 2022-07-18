@@ -6,7 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { IonInfiniteScroll } from '@ionic/angular';
+import { IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -30,11 +30,11 @@ export class AllPostsComponent implements OnInit {
   skipPosts = 0;
 
   userId$ = new BehaviorSubject<number>(null);
-  modalController: any;
 
   constructor(
     private postsService: PostService,
-    private authService: AuthService
+    private authService: AuthService,
+    public modalController: ModalController
   ) {}
 
   ngOnInit() {
