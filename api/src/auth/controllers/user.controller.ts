@@ -14,6 +14,8 @@ import {
   saveImageToStorage,
   // removeFile,
 } from '../helpers/image-storage';
+import { of } from 'rxjs';
+import { join } from 'path';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,15 @@ export class UserController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
   uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req): any {
-    return;
+    const fileName = file?.filename;
+
+    if (!fileName) {
+      return of({ error: 'File must be a png, jpg/jpeg' });
+    }
+
+    const imagesFolderPath = join(process.cwd(), 'images');
+    const fullImagePath = join(imagesFolderPath + '/' + file.filename);
+
+    return of({ error: 'File content does not match extension!' });
   }
 }

@@ -30,3 +30,5 @@ export const saveImageToStorage = {
     allowedMimeTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
   },
 };
+
+export const isFileExtensionSafe = ()
