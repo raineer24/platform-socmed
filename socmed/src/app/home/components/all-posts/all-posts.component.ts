@@ -82,4 +82,15 @@ export class AllPostsComponent implements OnInit {
   loadData(event) {
     this.getPosts(true, event);
   }
+  async presentUpdateModal(postId: number) {
+    console.log('Edit post', postId);
+  }
+
+  deletePost(postId: number) {
+    this.postsService.deletePost(postId).subscribe(() => {
+      this.allLoadedPosts = this.allLoadedPosts.filter(
+        (post: Post) => post.id !== postId
+      );
+    });
+  }
 }
