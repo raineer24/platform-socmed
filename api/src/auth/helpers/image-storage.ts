@@ -5,6 +5,7 @@ import fs from 'fs';
 import FileType from 'file-type';
 
 import path = require('path');
+import { from, Observable, of, switchMap } from 'rxjs';
 
 type validFileExtension = 'png' | 'jpg' | 'jpeg';
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
@@ -31,4 +32,29 @@ export const saveImageToStorage = {
   },
 };
 
-export const isFileExtensionSafe = ()
+export const isFileExtensionSafe = (
+  fullFilePath: string,
+): Observable<boolean> => {
+  return from(FileType.fileTypeFromFile(fullFilePath)).pipe(
+    switchMap(
+      (fileExtensionAndMimeType: {
+        ext: validFileExtension;
+        mime: validMimeType;
+      }) => {
+        if (!fileExtensionAndMimeType) {
+          return of(false);
+        }
+
+        const isFileTypeLegit = validFileExtension.includes(
+          fileExtensionAndMimeType.ext,
+        );
+        const isMimeTypeLegit = validMimeTypes.includes(
+          fileExtensionAndMimeType.mime,
+        );
+
+        const isFileLegit = isFileTypeLegit && isMimeTypeLegit;
+        return of(isFileLegit);
+      },
+    ),
+  );
+};
