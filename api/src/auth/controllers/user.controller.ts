@@ -5,6 +5,8 @@ import {
   UseGuards,
   UseInterceptors,
   Request,
+  Get,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -15,7 +17,7 @@ import {
   removeFile,
   isFileExtensionSafe,
 } from '../helpers/image-storage';
-import { map, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { join } from 'path';
 
 @Controller('user')
@@ -42,6 +44,17 @@ export class UserController {
           return this.userService.updateUserImageById(userId, fileName);
         }
         return of({ error: 'File content does not match extension!' });
+      }),
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('image')
+  findImage(@Request() req, @Res() res): Observable<object> {
+    const userId = req.user.id;
+    return this.userService.findImageNameByUserId(userId).pipe(
+      switchMap((imageName: string) => {
+        return of(res.sendFile(imageName, { root: './images' }));
       }),
     );
   }
