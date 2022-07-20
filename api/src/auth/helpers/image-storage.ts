@@ -1,20 +1,23 @@
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 
-import fs from 'fs';
-import FileType from 'file-type';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require('fs');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const FileType = require('file-type');
 
 import path = require('path');
-import { from, Observable, of, switchMap } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 type validFileExtension = 'png' | 'jpg' | 'jpeg';
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
 
-const validFileExtension: validFileExtension[] = ['png', 'jpeg', 'jpeg'];
+const validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
 const validMimeTypes: validMimeType[] = [
-  'image/jpeg',
-  'image/jpg',
   'image/png',
+  'image/jpg',
+  'image/jpeg',
 ];
 
 export const saveImageToStorage = {
@@ -35,26 +38,31 @@ export const saveImageToStorage = {
 export const isFileExtensionSafe = (
   fullFilePath: string,
 ): Observable<boolean> => {
-  return from(FileType.fileTypeFromFile(fullFilePath)).pipe(
+  return from(FileType.fromFile(fullFilePath)).pipe(
     switchMap(
       (fileExtensionAndMimeType: {
         ext: validFileExtension;
         mime: validMimeType;
       }) => {
-        if (!fileExtensionAndMimeType) {
-          return of(false);
-        }
+        if (!fileExtensionAndMimeType) return of(false);
 
-        const isFileTypeLegit = validFileExtension.includes(
+        const isFileTypeLegit = validFileExtensions.includes(
           fileExtensionAndMimeType.ext,
         );
         const isMimeTypeLegit = validMimeTypes.includes(
           fileExtensionAndMimeType.mime,
         );
-
         const isFileLegit = isFileTypeLegit && isMimeTypeLegit;
         return of(isFileLegit);
       },
     ),
   );
+};
+
+export const removeFile = (fullFilePath: string): void => {
+  try {
+    fs.unlinkSync(fullFilePath);
+  } catch (err) {
+    console.error(err);
+  }
 };
