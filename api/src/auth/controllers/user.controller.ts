@@ -12,9 +12,10 @@ import { UserService } from '../services/user.service';
 import {
   // isFileExtensionSafe,
   saveImageToStorage,
-  // removeFile,
+  removeFile,
+  isFileExtensionSafe,
 } from '../helpers/image-storage';
-import { of } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { join } from 'path';
 
 @Controller('user')
@@ -34,6 +35,14 @@ export class UserController {
     const imagesFolderPath = join(process.cwd(), 'images');
     const fullImagePath = join(imagesFolderPath + '/' + file.filename);
 
-    return of({ error: 'File content does not match extension!' });
+    return isFileExtensionSafe(fullImagePath).pipe(
+      switchMap((isFileLegit: boolean) => {
+        if (isFileLegit) {
+          const userId = req.user.id;
+          return this.userService.updateUserImageById(userId, fileName);
+        }
+        return of({ error: 'File content does not match extension!' });
+      }),
+    );
   }
 }
