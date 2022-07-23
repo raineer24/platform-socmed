@@ -58,4 +58,15 @@ export class UserController {
       }),
     );
   }
+
+  @UseGuards(JwtGuard)
+  @Get('image-name')
+  findUserImageName(@Request() req, @Res() res): Observable<object> {
+    const userId = req.user.id;
+    return this.userService.findImageNameByUserId(userId).pipe(
+      switchMap((imageName: string) => {
+        return of({ imageName });
+      }),
+    );
+  }
 }
