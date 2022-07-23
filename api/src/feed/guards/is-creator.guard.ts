@@ -1,13 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { User } from 'src/auth/models/user.class';
-import { AuthService } from 'src/auth/services/auth.service';
+import { UserService } from 'src/auth/services/user.service';
 import { FeedService } from '../services/feed.service';
 import { FeedPost } from '../models/post.interface';
 @Injectable()
 export class IsCreatorGuard implements CanActivate {
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
     private feedService: FeedService,
   ) {}
 
@@ -28,7 +28,7 @@ export class IsCreatorGuard implements CanActivate {
     const feedId = params.id;
 
     // Determine if logged-in user is the same as the user that created the feed post
-    return this.authService.findUserById(userId).pipe(
+    return this.userService.findUserById(userId).pipe(
       switchMap((user: User) =>
         this.feedService.findPostById(feedId).pipe(
           map((feedPost: FeedPost) => {

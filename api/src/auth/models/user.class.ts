@@ -9,7 +9,7 @@ export interface User {
   email?: string;
   // @IsString()
   password?: string;
-  //imagePath?: string;
+  imagePath?: string;
   role?: Role;
   posts?: FeedPost[];
 }
