@@ -91,7 +91,20 @@ export class AuthService {
 
   uploadUserImage(
     formData: FormData
-  ): Observable<{ modifiedFileName: string }> {}
+  ): Observable<{ modifiedFileName: string }> {
+    return this.http
+      .post<{ modifiedFileName }>(
+        `${environment.baseApiUrl}/user/upload`,
+        formData
+      )
+      .pipe(
+        tap(({ modifiedFileName }) => {
+          const user = this.user$.value;
+          user.imagePath = modifiedFileName;
+          this.user$.next(user);
+        })
+      );
+  }
 
   getDefaultImagePath(): string {
     return 'http://localhost:3000/api/feed/image/blank-profile-picture.png';

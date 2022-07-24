@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { switchMap, take } from 'rxjs/operators';
 import { Role } from 'src/app/auth/models/user.model';
+import { FormControl, FormGroup } from '@angular/forms';
 type BannerColors = {
   colorOne: string;
   colorTwo: string;
@@ -13,6 +14,8 @@ type BannerColors = {
   styleUrls: ['./profile-summary.component.scss'],
 })
 export class ProfileSummaryComponent implements OnInit {
+  form: FormGroup;
+
   bannerColors: BannerColors = {
     colorOne: '#a0b4b7',
     colorTwo: '#dbe7e9',
@@ -21,6 +24,10 @@ export class ProfileSummaryComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
+    this.form = new FormGroup({
+      file: new FormControl(null),
+    });
+
     this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
       this.bannerColors = this.getBannerColors(role);
     });
