@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   getDefaultImagePath(): string {
-    return 'http://localhost:3000/api/feed/image/blank-profile-picture.png';
+    return 'https://raw.githubusercontent.com/Jon-Peppinck/linkedin-clone/main/api/images/blank-profile-picture.png';
   }
 
   getFullImagePath(imageName: string): string {

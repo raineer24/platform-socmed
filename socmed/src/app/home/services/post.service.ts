@@ -3,11 +3,26 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Post } from '../models/post.interface';
 import { environment } from 'src/environments/environment';
 import { catchError, take, tap } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/services/auth.service';
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {
+    this.authService
+      .getUserImageName()
+      .pipe(
+        take(1),
+        tap(({ imageName }) => {
+          console.log(125, imageName);
+          const defaultImagePath = 'blank-profile-picture.png';
+          this.authService
+            .updateUserImagePath(imageName || defaultImagePath)
+            .subscribe();
+        })
+      )
+      .subscribe();
+  }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   private httpOptions: { headers: HttpHeaders } = {
