@@ -72,7 +72,7 @@ export class ProfileSummaryComponent implements OnInit {
               const isMimeTypeLegit = this.validMimeTypes.includes(mime as any);
               const isFileLegit = isFileTypeLegit && isMimeTypeLegit;
               if (!isFileLegit) {
-                //TODO: error handling
+                //TODO: error handling!
                 console.log({
                   error: 'file format does not match file extension',
                 });
