@@ -27,7 +27,10 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', saveImageToStorage))
-  uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req): any {
+  uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+  ): Observable<{ modifiedFileName: string } | { error: string }> {
     const fileName = file?.filename;
 
     if (!fileName) {
@@ -41,7 +44,11 @@ export class UserController {
       switchMap((isFileLegit: boolean) => {
         if (isFileLegit) {
           const userId = req.user.id;
-          return this.userService.updateUserImageById(userId, fileName);
+          return this.userService.updateUserImageById(userId, fileName).pipe(
+            map(() => ({
+              modifiedFileName: file.filename,
+            })),
+          );
         }
         return of({ error: 'File content does not match extension!' });
       }),
