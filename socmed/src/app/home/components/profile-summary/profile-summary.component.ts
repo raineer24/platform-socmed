@@ -30,7 +30,7 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   userFullImagePath: string;
   private userImagePathSubscription: Subscription;
 
-  private userSubscription: Subscription;
+  // private userSubscription: Subscription;
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   fullName$ = new BehaviorSubject<string>(null);
@@ -62,12 +62,10 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
         this.fullName$.next(fullName);
       });
 
-    this.userSubscription = this.authService.userFullImagePath.subscribe(
-      (fullImagePath: string) => {
-        console.log(1, fullImagePath);
+    this.userImagePathSubscription =
+      this.authService.userFullImagePath.subscribe((fullImagePath: string) => {
         this.userFullImagePath = fullImagePath;
-      }
-    );
+      });
   }
 
   onFileSelect(event: Event): void {
@@ -143,6 +141,6 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   ngOnDestroy() {
-    this.userSubscription.unsubscribe();
+    this.userImagePathSubscription.unsubscribe();
   }
 }
