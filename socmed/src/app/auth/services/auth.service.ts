@@ -89,7 +89,9 @@ export class AuthService {
     );
   }
 
-  uploadUserImage() {}
+  uploadUserImage(
+    formData: FormData
+  ): Observable<{ modifiedFileName: string }> {}
 
   getDefaultImagePath(): string {
     return 'http://localhost:3000/api/feed/image/blank-profile-picture.png';
