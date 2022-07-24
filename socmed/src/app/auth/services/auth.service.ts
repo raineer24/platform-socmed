@@ -68,11 +68,26 @@ export class AuthService {
     );
   }
 
-  getUserImage() {}
+  getUserImage() {
+    return this.http.get(`${environment.baseApiUrl}/user/image`).pipe(take(1));
+  }
 
-  getUSerImageName() {}
+  getUserImageName(): Observable<{ imageName: string }> {
+    return this.http
+      .get<{ imageName: string }>(`${environment.baseApiUrl}/user/image-name`)
+      .pipe(take(1));
+  }
 
-  updateUserImagePath() {}
+  updateUserImagePath(imagePath: string) {
+    return this.user$.pipe(
+      take(1),
+      map((user: User) => {
+        user.imagePath = imagePath;
+        this.user$.next(user);
+        return user;
+      })
+    );
+  }
 
   uploadUserImage() {}
 
