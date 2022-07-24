@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { buffer, switchMap, take } from 'rxjs/operators';
 import { Role } from 'src/app/auth/models/user.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { fromBuffer } from 'file-type/core';
-import { from, of } from 'rxjs';
+import { from, of, Subscription } from 'rxjs';
 import { FileTypeResult } from 'file-type';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -22,12 +22,17 @@ type BannerColors = {
   templateUrl: './profile-summary.component.html',
   styleUrls: ['./profile-summary.component.scss'],
 })
-export class ProfileSummaryComponent implements OnInit {
+export class ProfileSummaryComponent implements OnInit, OnDestroy {
   form: FormGroup;
 
   validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
   validMimeTypes: validMimeType[] = ['image/png', 'image/jpg', 'image/jpeg'];
+  userFullImagePath: string;
+  private userImagePathSubscription: Subscription;
 
+  private userSubscription: Subscription;
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   bannerColors: BannerColors = {
     colorOne: '#a0b4b7',
     colorTwo: '#dbe7e9',
@@ -114,5 +119,10 @@ export class ProfileSummaryComponent implements OnInit {
       default:
         return this.bannerColors;
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
   }
 }
