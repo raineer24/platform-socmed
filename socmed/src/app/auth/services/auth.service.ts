@@ -46,10 +46,12 @@ export class AuthService {
       .asObservable()
       .pipe(switchMap((user: User) => of(user.id)));
   }
-  get getUserFullName(): Observable<string> {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get userFullName(): Observable<string> {
     return this.user$.asObservable().pipe(
       switchMap((user: User) => {
         const fullName = user.firstName + ' ' + user.lastName;
+        console.log('fullName', fullName);
         return of(fullName);
       })
     );
