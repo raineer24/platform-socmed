@@ -35,6 +35,12 @@ let FeedController = class FeedController {
     delete(id) {
         return this.feedService.deletePost(id);
     }
+    findImageByName(fileName, res) {
+        if (!fileName || ['null', '[null]'].includes(fileName)) {
+            return;
+        }
+        return res.sendFile(fileName, { root: './images' });
+    }
 };
 __decorate([
     (0, common_1.UseGuards)(jwt_guard_1.JwtGuard),
@@ -71,6 +77,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", rxjs_1.Observable)
 ], FeedController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Get)('image/:fileName'),
+    __param(0, (0, common_1.Param)('fileName')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], FeedController.prototype, "findImageByName", null);
 FeedController = __decorate([
     (0, common_1.Controller)('feed'),
     __metadata("design:paramtypes", [feed_service_1.FeedService])

@@ -22,6 +22,10 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  get userStream(): Observable<User> {
+    return this.user$.asObservable();
+  }
+
   get isUserLoggedIn(): Observable<boolean> {
     return this.user$.asObservable().pipe(
       switchMap((user: User) => {
@@ -41,6 +45,22 @@ export class AuthService {
     return this.user$
       .asObservable()
       .pipe(switchMap((user: User) => of(user.id)));
+  }
+  getUserFullName(): Observable<string> {
+    return this.user$.asObservable().pipe(
+      switchMap((user: User) => {
+        const fullName = user.firstName + ' ' + user.lastName;
+        return of(fullName);
+      })
+    );
+  }
+
+  getDefaultImagePath(): string {
+    return 'http://localhost:3000/api/feed/image/blank-profile-picture.png';
+  }
+
+  getFullImagePath(imageName: string): string {
+    return 'http://localhost:3000/api/feed/image/' + imageName;
   }
 
   register(newUser: NewUser): Observable<User> {
