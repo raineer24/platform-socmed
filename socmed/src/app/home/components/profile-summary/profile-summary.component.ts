@@ -4,7 +4,7 @@ import { buffer, switchMap, take } from 'rxjs/operators';
 import { Role } from 'src/app/auth/models/user.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { fromBuffer } from 'file-type/core';
-import { from, of, Subscription } from 'rxjs';
+import { BehaviorSubject, from, of, Subscription } from 'rxjs';
 import { FileTypeResult } from 'file-type';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,6 +33,11 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
+  fullName$ = new BehaviorSubject<string>(null);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  fullName = '';
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   bannerColors: BannerColors = {
     colorOne: '#a0b4b7',
     colorTwo: '#dbe7e9',
@@ -48,6 +53,13 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
     this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
       this.bannerColors = this.getBannerColors(role);
     });
+
+    this.userSubscription = this.authService.userFullImagePath.subscribe(
+      (fullImagePath: string) => {
+        console.log(1, fullImagePath);
+        this.userFullImagePath = fullImagePath;
+      }
+    );
   }
 
   onFileSelect(event: Event): void {
