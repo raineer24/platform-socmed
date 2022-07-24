@@ -2,13 +2,11 @@
 import {
   Component,
   Input,
-  OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll, ModalController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -21,7 +19,7 @@ import { ModalComponent } from '../start-post/modal/modal.component';
   templateUrl: './all-posts.component.html',
   styleUrls: ['./all-posts.component.scss'],
 })
-export class AllPostsComponent implements OnInit, OnDestroy {
+export class AllPostsComponent implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   @Input() postBody: string;
@@ -32,8 +30,7 @@ export class AllPostsComponent implements OnInit, OnDestroy {
   skipPosts = 0;
 
   userId$ = new BehaviorSubject<number>(null);
-  userFullImagePath: string;
-  private userImagePathSubscription: Subscription;
+
   constructor(
     private postsService: PostService,
     private authService: AuthService,
@@ -46,11 +43,6 @@ export class AllPostsComponent implements OnInit, OnDestroy {
     this.authService.userId.pipe(take(1)).subscribe((userId: number) => {
       this.userId$.next(userId);
     });
-
-    this.userImagePathSubscription =
-      this.authService.userFullImagePath.subscribe((fullImagePath: string) => {
-        this.userFullImagePath = fullImagePath;
-      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -92,6 +84,28 @@ export class AllPostsComponent implements OnInit, OnDestroy {
   loadData(event) {
     this.getPosts(true, event);
   }
+  // async presentUpdateModal(postId: number) {
+  //   console.log('edit post');
+  //   const modal = await this.modalController.create({
+  //     component: ModalComponent,
+  //     cssClass: 'my-custom-class2',
+  //     componentProps: {
+  //       postId,
+  //     },
+  //   });
+  //   await modal.present();
+  //   const { data } = await modal.onDidDismiss();
+  //   if (!data) {
+  //     return;
+  //   }
+  //   const newPostBody = data.post.body;
+  //   this.postsService.updatePost(postId, newPostBody).subscribe(() => {
+  //     const postIndex = this.allLoadedPosts.findIndex(
+  //       (post: Post) => post.id !== postId
+  //     );
+  //     this.allLoadedPosts[postIndex].body = newPostBody;
+  //   });
+  // }
 
   async presentUpdateModal(postId: number) {
     console.log('EDIT POST');
@@ -125,9 +139,5 @@ export class AllPostsComponent implements OnInit, OnDestroy {
         (post: Post) => post.id !== postId
       );
     });
-  }
-
-  ngOnDestroy() {
-    this.userImagePathSubscription.unsubscribe();
   }
 }
