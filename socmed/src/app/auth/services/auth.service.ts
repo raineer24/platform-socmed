@@ -46,7 +46,7 @@ export class AuthService {
       .asObservable()
       .pipe(switchMap((user: User) => of(user.id)));
   }
-  getUserFullName(): Observable<string> {
+  get getUserFullName(): Observable<string> {
     return this.user$.asObservable().pipe(
       switchMap((user: User) => {
         const fullName = user.firstName + ' ' + user.lastName;
@@ -54,6 +54,27 @@ export class AuthService {
       })
     );
   }
+
+  get userFullImagePath(): Observable<string> {
+    return this.user$.asObservable().pipe(
+      switchMap((user: User) => {
+        const doesAuthorHaveImage = !!user?.imagePath;
+        let fullImagePath = this.getDefaultImagePath();
+        if (doesAuthorHaveImage) {
+          fullImagePath = this.getFullImagePath(user.imagePath);
+        }
+        return of(fullImagePath);
+      })
+    );
+  }
+
+  getUserImage() {}
+
+  getUSerImageName() {}
+
+  updateUserImagePath() {}
+
+  uploadUserImage() {}
 
   getDefaultImagePath(): string {
     return 'http://localhost:3000/api/feed/image/blank-profile-picture.png';
