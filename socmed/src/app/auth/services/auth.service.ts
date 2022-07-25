@@ -22,6 +22,10 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  get userStream(): Observable<User> {
+    return this.user$.asObservable();
+  }
+
   get isUserLoggedIn(): Observable<boolean> {
     return this.user$.asObservable().pipe(
       switchMap((user: User) => {
@@ -41,6 +45,75 @@ export class AuthService {
     return this.user$
       .asObservable()
       .pipe(switchMap((user: User) => of(user.id)));
+  }
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  get userFullName(): Observable<string> {
+    return this.user$.asObservable().pipe(
+      switchMap((user: User) => {
+        const fullName = user.firstName + ' ' + user.lastName;
+        console.log('fullName', fullName);
+        return of(fullName);
+      })
+    );
+  }
+
+  get userFullImagePath(): Observable<string> {
+    return this.user$.asObservable().pipe(
+      switchMap((user: User) => {
+        const doesAuthorHaveImage = !!user?.imagePath;
+        let fullImagePath = this.getDefaultImagePath();
+        if (doesAuthorHaveImage) {
+          fullImagePath = this.getFullImagePath(user.imagePath);
+        }
+        return of(fullImagePath);
+      })
+    );
+  }
+
+  getUserImage() {
+    return this.http.get(`${environment.baseApiUrl}/user/image`).pipe(take(1));
+  }
+
+  getUserImageName(): Observable<{ imageName: string }> {
+    return this.http
+      .get<{ imageName: string }>(`${environment.baseApiUrl}/user/image-name`)
+      .pipe(take(1));
+  }
+
+  updateUserImagePath(imagePath: string) {
+    return this.user$.pipe(
+      take(1),
+      map((user: User) => {
+        user.imagePath = imagePath;
+        this.user$.next(user);
+        return user;
+      })
+    );
+  }
+
+  uploadUserImage(
+    formData: FormData
+  ): Observable<{ modifiedFileName: string }> {
+    return this.http
+      .post<{ modifiedFileName }>(
+        `${environment.baseApiUrl}/user/upload`,
+        formData
+      )
+      .pipe(
+        tap(({ modifiedFileName }) => {
+          const user = this.user$.value;
+          user.imagePath = modifiedFileName;
+          this.user$.next(user);
+        })
+      );
+  }
+
+  getDefaultImagePath(): string {
+    return 'https://raw.githubusercontent.com/Jon-Peppinck/linkedin-clone/main/api/images/blank-profile-picture.png';
+  }
+
+  getFullImagePath(imageName: string): string {
+    return 'http://localhost:3000/api/feed/image/' + imageName;
   }
 
   register(newUser: NewUser): Observable<User> {

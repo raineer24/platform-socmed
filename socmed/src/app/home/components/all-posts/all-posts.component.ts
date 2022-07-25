@@ -2,13 +2,16 @@
 import {
   Component,
   Input,
+  OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { IonInfiniteScroll, ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { take } from 'rxjs/operators';
+import { User } from 'src/app/auth/models/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Post } from '../../models/post.interface';
 import { PostService } from '../../services/post.service';
@@ -19,7 +22,7 @@ import { ModalComponent } from '../start-post/modal/modal.component';
   templateUrl: './all-posts.component.html',
   styleUrls: ['./all-posts.component.scss'],
 })
-export class AllPostsComponent implements OnInit {
+export class AllPostsComponent implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   @Input() postBody: string;
@@ -31,6 +34,8 @@ export class AllPostsComponent implements OnInit {
 
   userId$ = new BehaviorSubject<number>(null);
 
+  private userSubscription: Subscription;
+
   constructor(
     private postsService: PostService,
     private authService: AuthService,
@@ -38,6 +43,18 @@ export class AllPostsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.userSubscription = this.authService.userStream.subscribe(
+      (user: User) => {
+        this.allLoadedPosts.forEach((post: Post, index: number) => {
+          if (user?.imagePath && post.author.id === user.id) {
+            // eslint-disable-next-line @typescript-eslint/dot-notation
+            this.allLoadedPosts[index]['fullImagePath'] =
+              this.authService.getFullImagePath(user.imagePath);
+          }
+        });
+      }
+    );
+
     this.getPosts(false, '');
 
     this.authService.userId.pipe(take(1)).subscribe((userId: number) => {
@@ -52,8 +69,13 @@ export class AllPostsComponent implements OnInit {
       return;
     }
     this.postsService.createPost(postBody).subscribe((post: Post) => {
-      console.log('postSERVICES');
-      this.allLoadedPosts.unshift(post);
+      this.authService.userFullImagePath
+        .pipe(take(1))
+        .subscribe((fullImagePath: string) => {
+          // eslint-disable-next-line @typescript-eslint/dot-notation
+          post['fullImagePath'] = fullImagePath;
+          this.allLoadedPosts.unshift(post);
+        });
     });
   }
 
@@ -66,8 +88,17 @@ export class AllPostsComponent implements OnInit {
     this.postsService.getSelectedPosts(this.queryParams).subscribe(
       (posts: Post[]) => {
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let post = 0; post < posts.length; post++) {
-          this.allLoadedPosts.push(posts[post]);
+        for (let postIndex = 0; postIndex < posts.length; postIndex++) {
+          const doesAuthorHaveImage = !!posts[postIndex].author.imagePath;
+          let fullImagePath = this.authService.getDefaultImagePath();
+          if (doesAuthorHaveImage) {
+            fullImagePath = this.authService.getFullImagePath(
+              posts[postIndex].author.imagePath
+            );
+          }
+          // eslint-disable-next-line @typescript-eslint/dot-notation
+          posts[postIndex]['fullImagePath'] = fullImagePath;
+          this.allLoadedPosts.push(posts[postIndex]);
         }
         if (isInitialLoad) {
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -84,29 +115,6 @@ export class AllPostsComponent implements OnInit {
   loadData(event) {
     this.getPosts(true, event);
   }
-  // async presentUpdateModal(postId: number) {
-  //   console.log('edit post');
-  //   const modal = await this.modalController.create({
-  //     component: ModalComponent,
-  //     cssClass: 'my-custom-class2',
-  //     componentProps: {
-  //       postId,
-  //     },
-  //   });
-  //   await modal.present();
-  //   const { data } = await modal.onDidDismiss();
-  //   if (!data) {
-  //     return;
-  //   }
-  //   const newPostBody = data.post.body;
-  //   this.postsService.updatePost(postId, newPostBody).subscribe(() => {
-  //     const postIndex = this.allLoadedPosts.findIndex(
-  //       (post: Post) => post.id !== postId
-  //     );
-  //     this.allLoadedPosts[postIndex].body = newPostBody;
-  //   });
-  // }
-
   async presentUpdateModal(postId: number) {
     console.log('EDIT POST');
     const modal = await this.modalController.create({
@@ -139,5 +147,9 @@ export class AllPostsComponent implements OnInit {
         (post: Post) => post.id !== postId
       );
     });
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
   }
 }
