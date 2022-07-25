@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable } from 'rxjs';
 import { Repository, UpdateResult } from 'typeorm';
+import { FriendRequestEntity } from '../models/friend-request.entity';
 import { User } from '../models/user.class';
 import { UserEntity } from '../models/user.entity';
 
@@ -10,6 +11,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(FriendRequestEntity)
+    private readonly friendRequestRepository: Repository<FriendRequestEntity>,
   ) {}
   findUserById(id: number): Observable<User> {
     return from(
