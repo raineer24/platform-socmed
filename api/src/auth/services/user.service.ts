@@ -77,7 +77,23 @@ export class UserService {
 
     return this.findUserById(receiverId).pipe(
       switchMap((receiver: User) => {
-        return;
+        return this.hasRequestBeenSentOrReceived(creator, receiver).pipe(
+          switchMap((hasRequestBeenSentOrReceived: boolean) => {
+            if (hasRequestBeenSentOrReceived) {
+              return of({
+                error:
+                  'A friend request has already been sent of received to your account!',
+              });
+            }
+            // eslint-disable-next-line prefer-const
+            let friendRequest: FriendRequest = {
+              creator,
+              receiver,
+              status: 'pending',
+            };
+            return from(this.friendRequestRepository.save(friendRequest));
+          }),
+        );
       }),
     );
   }
