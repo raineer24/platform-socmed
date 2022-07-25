@@ -7,6 +7,7 @@ import {
   Request,
   Get,
   Res,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -19,6 +20,7 @@ import {
 } from '../helpers/image-storage';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { join } from 'path';
+import { User } from '../models/user.class';
 
 @Controller('user')
 export class UserController {
@@ -75,5 +77,12 @@ export class UserController {
         return of({ imageName });
       }),
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':userId')
+  findUserById(@Param('userId') userId: number): Observable<User> {
+    //const userId = parseInt(userStringId);
+    return this.userService.findUserById(userId);
   }
 }
