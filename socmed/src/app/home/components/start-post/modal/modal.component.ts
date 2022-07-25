@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { buffer, switchMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-modal',
@@ -15,6 +16,10 @@ export class ModalComponent implements OnInit, OnDestroy {
   @Input() postId?: number;
 
   userFullImagePath: string;
+
+  fullName$ = new BehaviorSubject<string>(null);
+  fullName = '';
+
   private userImagePathSubscription: Subscription;
   constructor(
     public modalController: ModalController,
@@ -25,6 +30,14 @@ export class ModalComponent implements OnInit, OnDestroy {
     this.userImagePathSubscription =
       this.authService.userFullImagePath.subscribe((fullImagePath: string) => {
         this.userFullImagePath = fullImagePath;
+      });
+
+    this.authService.userFullName
+      .pipe(take(1))
+      .subscribe((fullName: string) => {
+        this.fullName = fullName;
+        console.log('fullname', this.fullName);
+        this.fullName$.next(fullName);
       });
   }
 

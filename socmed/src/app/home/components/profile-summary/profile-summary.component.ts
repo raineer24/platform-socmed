@@ -28,14 +28,8 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   validFileExtensions: validFileExtension[] = ['png', 'jpg', 'jpeg'];
   validMimeTypes: validMimeType[] = ['image/png', 'image/jpg', 'image/jpeg'];
   userFullImagePath: string;
-  private userImagePathSubscription: Subscription;
 
   // private userSubscription: Subscription;
-
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  fullName$ = new BehaviorSubject<string>(null);
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  fullName = '';
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   bannerColors: BannerColors = {
@@ -43,6 +37,11 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
     colorTwo: '#dbe7e9',
     colorThree: '#bfd3d6;',
   };
+
+  fullName$ = new BehaviorSubject<string>(null);
+  fullName = '';
+
+  private userImagePathSubscription: Subscription;
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
