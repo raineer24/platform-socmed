@@ -21,6 +21,7 @@ import {
 import { map, Observable, of, switchMap } from 'rxjs';
 import { join } from 'path';
 import { User } from '../models/user.class';
+import { FriendRequest } from '../models/friend-request.interface';
 
 @Controller('user')
 export class UserController {
@@ -81,8 +82,17 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get(':userId')
-  findUserById(@Param('userId') userId: number): Observable<User> {
-    //const userId = parseInt(userStringId);
+  findUserById(@Param('userId') userStringId: string): Observable<User> {
+    const userId = parseInt(userStringId);
     return this.userService.findUserById(userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('friend-request/send/:receiverId')
+  sendFriendRequest(
+    @Param('receiverId') receiverStringId: string,
+  ): Observable<FriendRequest | { error: string }> {
+    const receiverId = parseInt(receiverStringId);
+    return this.userService;
   }
 }
