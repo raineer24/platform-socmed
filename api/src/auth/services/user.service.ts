@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable, of, switchMap } from 'rxjs';
 import { Repository, UpdateResult } from 'typeorm';
 import { FriendRequestEntity } from '../models/friend-request.entity';
-import { FriendRequest } from '../models/friend-request.interface';
+import {
+  FriendRequest,
+  FriendRequestsStatus,
+} from '../models/friend-request.interface';
 import { User } from '../models/user.class';
 import { UserEntity } from '../models/user.entity';
 
@@ -98,5 +101,40 @@ export class UserService {
     );
   }
 
-  getFriendRequestStatus() {}
+  // getFriendRequestStatus(
+  //   receiverId: number,
+  //   currentUser: User,
+  // ): Observable<FriendRequestsStatus> {
+  //   return this.findUserById(receiverId).pipe(
+  //     switchMap((receiver: User) => {
+  //       return from(
+  //         this.friendRequestRepository.findOne({
+  //           creator: currentUser,
+  //           receiver,
+  //         }),
+  //       );
+  //     }),
+  //     switchMap((friendRequest: FriendRequest) => {
+  //       return of({ status: friendRequest.status });
+  //     }),
+  //   );
+  // }
+
+  getFriendRequestStatus(
+    receiverId: number,
+    currentUser: User,
+  ): Observable<FriendRequestsStatus> {
+    return this.findUserById(receiverId).pipe(
+      switchMap((receiver: User) => {
+        return from(
+          this.friendRequestRepository.findOne({
+            where: [{ creator: currentUser, receiver: receiver }],
+          }),
+        );
+      }),
+      switchMap((friendRequest: FriendRequest) => {
+        return of({ status: friendRequest?.status });
+      }),
+    );
+  }
 }
