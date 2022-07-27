@@ -124,4 +124,12 @@ export class UserController {
       friendRequestId,
     );
   }
+
+  @UseGuards(JwtGuard)
+  @Get('friend-request/me/received-requests')
+  getFriendRequestsFromRecipients(
+    @Request() req,
+  ): Observable<FriendRequestsStatus[]> {
+    return this.userService.getFriendRequestsFromRecipients(req.user);
+  }
 }

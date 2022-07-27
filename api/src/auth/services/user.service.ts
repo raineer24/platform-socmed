@@ -155,9 +155,20 @@ export class UserService {
       switchMap((friendRequest: FriendRequest) => {
         return from(
           this.friendRequestRepository.save({
+            ...friendRequest,
             status: statusResponse,
           }),
         );
+      }),
+    );
+  }
+
+  getFriendRequestsFromRecipients(
+    currentUser: User,
+  ): Observable<FriendRequest[]> {
+    return from(
+      this.friendRequestRepository.find({
+        where: [{ receiver: currentUser }],
       }),
     );
   }
