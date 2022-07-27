@@ -6,6 +6,7 @@ import { FriendRequestEntity } from '../models/friend-request.entity';
 import {
   FriendRequest,
   FriendRequestsStatus,
+  FriendRequest_Status,
 } from '../models/friend-request.interface';
 import { User } from '../models/user.class';
 import { UserEntity } from '../models/user.entity';
@@ -136,5 +137,16 @@ export class UserService {
         return of({ status: friendRequest?.status });
       }),
     );
+  }
+
+  getFriendRequestUserById(
+    friendRequestId: number,
+  ): Observable<FriendRequest> {}
+
+  respondToFriendRequest(
+    statusResponse: FriendRequest_Status,
+    friendRequestId: number,
+  ): Observable<FriendRequestsStatus> {
+    return;
   }
 }
