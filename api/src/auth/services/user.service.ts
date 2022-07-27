@@ -128,7 +128,7 @@ export class UserService {
       switchMap((receiver: User) => {
         return from(
           this.friendRequestRepository.findOne({
-            where: [{ creator: currentUser, receiver: receiver }],
+            where: [{ creator: currentUser, receiver }],
           }),
         );
       }),
