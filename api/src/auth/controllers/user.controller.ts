@@ -8,6 +8,8 @@ import {
   Get,
   Res,
   Param,
+  Put,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -108,5 +110,18 @@ export class UserController {
   ): Observable<FriendRequestsStatus> {
     const receiverId = parseInt(receiverIdStringId);
     return this.userService.getFriendRequestStatus(receiverId, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('friend-request/response/:friendRequestId')
+  respondToFriendRequest(
+    @Param('friendRequestId') friendRequestStringId: string,
+    @Body() statusResponse: FriendRequestsStatus,
+  ): Observable<FriendRequestsStatus> {
+    const friendRequestId = parseInt(friendRequestStringId);
+    return this.userService.respondToFriendRequest(
+      statusResponse.status,
+      friendRequestId,
+    );
   }
 }

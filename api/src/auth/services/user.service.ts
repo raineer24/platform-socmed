@@ -139,14 +139,26 @@ export class UserService {
     );
   }
 
-  getFriendRequestUserById(
-    friendRequestId: number,
-  ): Observable<FriendRequest> {}
+  getFriendRequestUserById(friendRequestId: number): Observable<FriendRequest> {
+    return from(
+      this.friendRequestRepository.findOne({
+        where: [{ id: friendRequestId }],
+      }),
+    );
+  }
 
   respondToFriendRequest(
     statusResponse: FriendRequest_Status,
     friendRequestId: number,
   ): Observable<FriendRequestsStatus> {
-    return;
+    return this.getFriendRequestUserById(friendRequestId).pipe(
+      switchMap((friendRequest: FriendRequest) => {
+        return from(
+          this.friendRequestRepository.save({
+            status: statusResponse,
+          }),
+        );
+      }),
+    );
   }
 }
