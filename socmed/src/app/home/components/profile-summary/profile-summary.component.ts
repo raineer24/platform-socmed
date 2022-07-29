@@ -6,17 +6,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { fromBuffer } from 'file-type/core';
 import { BehaviorSubject, from, of, Subscription } from 'rxjs';
 import { FileTypeResult } from 'file-type';
+import { BannerColorService } from '../../services/banner-color.service';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type validFileExtension = 'png' | 'jpg' | 'jpeg';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
 
-type BannerColors = {
-  colorOne: string;
-  colorTwo: string;
-  colorThree: string;
-};
 @Component({
   selector: 'app-profile-summary',
   templateUrl: './profile-summary.component.html',
@@ -32,17 +28,15 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   // private userSubscription: Subscription;
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
-  bannerColors: BannerColors = {
-    colorOne: '#a0b4b7',
-    colorTwo: '#dbe7e9',
-    colorThree: '#bfd3d6;',
-  };
 
   fullName$ = new BehaviorSubject<string>(null);
   fullName = '';
 
   private userImagePathSubscription: Subscription;
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    public bannerColorService: BannerColorService
+  ) {}
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -50,7 +44,8 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
     });
 
     this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
-      this.bannerColors = this.getBannerColors(role);
+      this.bannerColorService.bannerColors =
+        this.bannerColorService.getBannerColors(role);
     });
 
     this.authService.userFullName
@@ -108,34 +103,6 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this.form.reset();
-  }
-
-  private getBannerColors(role: Role): BannerColors {
-    switch (role) {
-      case 'admin':
-        return {
-          colorOne: '#daa520',
-          colorTwo: '#f0e68c',
-          colorThree: '#fafad2',
-        };
-
-      case 'premium':
-        return {
-          colorOne: '#bc8f8f',
-          colorTwo: '#c09999',
-          colorThree: '#ddadaf',
-        };
-
-      case 'user':
-        return {
-          colorOne: '#a0b4b7',
-          colorTwo: '#dbe7e9',
-          colorThree: '#bfd3d6',
-        };
-
-      default:
-        return this.bannerColors;
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
