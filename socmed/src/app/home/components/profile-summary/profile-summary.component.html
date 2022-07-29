@@ -1,10 +1,9 @@
 <ion-card>
-  <div [style.background]="this.bannerColorService.bannerColors.bannerColors.colorTwo" class="backdrop">
-    <div [style.background]="this.bannerColorService.bannerColors.bannerColors.colorTwo" class="background-one"></div>
-    <div [style.background]="this.bannerColorService.bannerColors.bannerColors.colorOne" class="half-ellipse"></div>
-    <div [style.background]="this.bannerColorService.bannerColors.bannerColors.colorTwo" class="background-two"></div>
-    <div [style.background]="this.bannerColorService.bannerColors.bannerColors.colorThree" class="background-three">
-    </div>
+  <div [style.background]="this.bannerColorService.bannerColors.colorTwo" class="backdrop">
+    <div [style.background]="this.bannerColorService.bannerColors.colorTwo" class="background-one"></div>
+    <div [style.background]="this.bannerColorService.bannerColors.colorOne" class="half-ellipse"></div>
+    <div [style.background]="this.bannerColorService.bannerColors.colorTwo" class="background-two"></div>
+    <div [style.background]="this.bannerColorService.bannerColors.colorThree" class="background-three"></div>
   </div>
   <ion-card-header class="ion-text-center">
     <input #fileUpload (change)="onFileSelect($event)" type="file" style="display: none">
