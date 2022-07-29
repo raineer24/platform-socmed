@@ -129,12 +129,18 @@ export class UserService {
       switchMap((receiver: User) => {
         return from(
           this.friendRequestRepository.findOne({
-            where: [{ creator: currentUser, receiver: receiver }],
+            where: [
+              { creator: currentUser, receiver: receiver },
+              { creator: receiver, receiver: currentUser },
+            ],
+            relations: ['creator', 'receiver'],
           }),
         );
       }),
       switchMap((friendRequest: FriendRequest) => {
-        return of({ status: friendRequest?.status });
+        if (friendRequest?.receiver.id === currentUser.id) {
+        }
+        return of({ status: friendRequest?.status || 'not-sent' });
       }),
     );
   }
