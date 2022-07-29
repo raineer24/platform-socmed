@@ -7,6 +7,9 @@ import {
   Request,
   Get,
   Res,
+  Param,
+  Put,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from '../guards/jwt.guard';
@@ -19,6 +22,11 @@ import {
 } from '../helpers/image-storage';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { join } from 'path';
+import { User } from '../models/user.class';
+import {
+  FriendRequest,
+  FriendRequestsStatus,
+} from '../models/friend-request.interface';
 
 @Controller('user')
 export class UserController {
@@ -75,5 +83,53 @@ export class UserController {
         return of({ imageName });
       }),
     );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get(':userId')
+  findUserById(@Param('userId') userStringId: string): Observable<User> {
+    const userId = parseInt(userStringId);
+    return this.userService.findUserById(userId);
+  }
+
+  @UseGuards(JwtGuard)
+  @Post('friend-request/send/:receiverId')
+  sendFriendRequest(
+    @Param('receiverId') receiverStringId: string,
+    @Request() req,
+  ): Observable<FriendRequest | { error: string }> {
+    const receiverId = parseInt(receiverStringId);
+    return this.userService.sendFriendRequest(receiverId, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('friend-request/status/:receiverId')
+  getFriendRequestStatus(
+    @Param('receiverId') receiverIdStringId: string,
+    @Request() req,
+  ): Observable<FriendRequestsStatus> {
+    const receiverId = parseInt(receiverIdStringId);
+    return this.userService.getFriendRequestStatus(receiverId, req.user);
+  }
+
+  @UseGuards(JwtGuard)
+  @Put('friend-request/response/:friendRequestId')
+  respondToFriendRequest(
+    @Param('friendRequestId') friendRequestStringId: string,
+    @Body() statusResponse: FriendRequestsStatus,
+  ): Observable<FriendRequestsStatus> {
+    const friendRequestId = parseInt(friendRequestStringId);
+    return this.userService.respondToFriendRequest(
+      statusResponse.status,
+      friendRequestId,
+    );
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('friend-request/me/received-requests')
+  getFriendRequestsFromRecipients(
+    @Request() req,
+  ): Observable<FriendRequestsStatus[]> {
+    return this.userService.getFriendRequestsFromRecipients(req.user);
   }
 }
