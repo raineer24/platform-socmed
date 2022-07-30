@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { BannerColorService } from '../../services/banner-color.service';
 
 @Component({
@@ -7,7 +10,17 @@ import { BannerColorService } from '../../services/banner-color.service';
   styleUrls: ['./connection-profile.component.scss'],
 })
 export class ConnectionProfileComponent implements OnInit {
-  constructor(public bannerColorService: BannerColorService) {}
+  constructor(
+    public bannerColorService: BannerColorService,
+    private route: ActivatedRoute
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getUserIdFromUrl().subscribe((x) => console.log(33, x));
+  }
+  private getUserIdFromUrl(): Observable<number> {
+    return this.route.url.pipe(
+      map((urlSegment: UrlSegment[]) => +UrlSegment[0].path)
+    );
+  }
 }
