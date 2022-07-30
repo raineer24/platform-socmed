@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BannerColorService } from '../../services/banner-color.service';
 
 @Component({
   selector: 'app-connection-profile',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./connection-profile.component.scss'],
 })
 export class ConnectionProfileComponent implements OnInit {
+  constructor(public bannerColorService: BannerColorService) {}
 
   ngOnInit() {}
 }
