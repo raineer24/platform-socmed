@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap, take } from 'rxjs/operators';
 import { User } from 'src/app/auth/models/user.model';
 import {
   FriendRequestStatus,
@@ -49,6 +49,18 @@ export class ConnectionProfileComponent implements OnInit, OnDestroy {
         this.connectionProfileService.getConnectionUser(userId)
       )
     );
+  }
+
+  addUser(): Subscription {
+    this.friendRequestsStatus = 'pending';
+    return this.getUserIdFromUrl()
+      .pipe(
+        switchMap((userId: number) =>
+          this.connectionProfileService.addConnecctionUser(userId)
+        )
+      )
+      .pipe(take(1))
+      .subscribe();
   }
 
   getFriendRequestStatus(): Observable<FriendRequestStatus> {
