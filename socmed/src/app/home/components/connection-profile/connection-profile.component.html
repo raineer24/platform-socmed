@@ -9,14 +9,12 @@
     </div>
     <ion-card-header class="ion-text-center">
       <ion-avatar class="ion-margin-auto">
-        <!-- <ion-img *ngIf="userFullImagePath" [src]="userFullImagePath"></ion-img> -->
+        <ion-img *ngIf="user" [src]="$any(user).fullImagePath"></ion-img>
       </ion-avatar>
-      <!-- <ion-card-title class="ion-margin-top">
-        {{fullName}}
-      </ion-card-title> -->
-      <ion-card-title class="ion-margin-top">
-        Eugene Sanchez
+      <ion-card-title *ngIf="user" class="ion-margin-top">
+        {{user.firstName}}
       </ion-card-title>
+
       <ion-card-subtitle>Full Stack Developer</ion-card-subtitle>
     </ion-card-header>
 
