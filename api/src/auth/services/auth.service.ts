@@ -42,17 +42,12 @@ export class AuthService {
 
   validateUser(email: string, password: string): Observable<User> {
     return from(
-      this.userRepository.findOne({
-        select: {
-          firstName: true,
-          lastName: true,
-          id: true,
-          email: true,
-          password: true,
-          role: true,
+      this.userRepository.findOne(
+        { email },
+        {
+          select: ['id', 'firstName', 'lastName', 'email', 'password', 'role'],
         },
-        where: { email },
-      }),
+      ),
     ).pipe(
       switchMap((user: User) =>
         from(bcrypt.compare(password, user.password)).pipe(

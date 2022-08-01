@@ -25,7 +25,7 @@ import { join } from 'path';
 import { User } from '../models/user.class';
 import {
   FriendRequest,
-  FriendRequestsStatus,
+  FriendRequestStatus,
 } from '../models/friend-request.interface';
 
 @Controller('user')
@@ -99,16 +99,17 @@ export class UserController {
     @Request() req,
   ): Observable<FriendRequest | { error: string }> {
     const receiverId = parseInt(receiverStringId);
+
     return this.userService.sendFriendRequest(receiverId, req.user);
   }
 
   @UseGuards(JwtGuard)
   @Get('friend-request/status/:receiverId')
   getFriendRequestStatus(
-    @Param('receiverId') receiverIdStringId: string,
+    @Param('receiverId') receiverStringId: string,
     @Request() req,
-  ): Observable<FriendRequestsStatus> {
-    const receiverId = parseInt(receiverIdStringId);
+  ): Observable<FriendRequestStatus> {
+    const receiverId = parseInt(receiverStringId);
     return this.userService.getFriendRequestStatus(receiverId, req.user);
   }
 
@@ -116,8 +117,8 @@ export class UserController {
   @Put('friend-request/response/:friendRequestId')
   respondToFriendRequest(
     @Param('friendRequestId') friendRequestStringId: string,
-    @Body() statusResponse: FriendRequestsStatus,
-  ): Observable<FriendRequestsStatus> {
+    @Body() statusResponse: FriendRequestStatus,
+  ): Observable<FriendRequestStatus> {
     const friendRequestId = parseInt(friendRequestStringId);
     return this.userService.respondToFriendRequest(
       statusResponse.status,
@@ -129,7 +130,7 @@ export class UserController {
   @Get('friend-request/me/received-requests')
   getFriendRequestsFromRecipients(
     @Request() req,
-  ): Observable<FriendRequestsStatus[]> {
+  ): Observable<FriendRequestStatus[]> {
     return this.userService.getFriendRequestsFromRecipients(req.user);
   }
 }
