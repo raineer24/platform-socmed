@@ -22,15 +22,15 @@
     <ion-card-content>
       <ng-container *ngIf="
           ['not-sent', 'pending', 'waiting-for-current-user-response'].includes(
-            friendRequestStatus
+            friendRequestsStatus
           )
         ">
         <ion-button (click)="addUser()" [disabled]="
             ['pending', 'waiting-for-current-user-response'].includes(
-              friendRequestStatus
+              friendRequestsStatus
             )
           " shape="round">{{
-            friendRequestStatus === "waiting-for-current-user-response"
+            friendRequestsStatus === "waiting-for-current-user-response"
               ? "Accept Request"
               : "Connect"
           }}</ion-button>

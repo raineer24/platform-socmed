@@ -30,8 +30,9 @@ export class ConnectionProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.friendRequestStatusSubscription$ = this.getFriendRequestStatus()
       .pipe(
-        tap((friendRequestsStatus: FriendRequestStatus) => {
-          this.friendRequestsStatus = friendRequestsStatus.status;
+        tap((friendRequestStatus: FriendRequestStatus) => {
+          this.friendRequestsStatus = friendRequestStatus.status;
+          console.log('this.friendREs', this.friendRequestsStatus);
           this.userSubscription$ = this.getUser().subscribe((user: User) => {
             this.user = user;
             const imgPath = user.imagePath ?? 'blank-profile-picture.png';
@@ -53,11 +54,14 @@ export class ConnectionProfileComponent implements OnInit, OnDestroy {
 
   addUser(): Subscription {
     this.friendRequestsStatus = 'pending';
+    console.log('statys ', this.friendRequestsStatus);
+
     return this.getUserIdFromUrl()
       .pipe(
-        switchMap((userId: number) =>
-          this.connectionProfileService.addConnecctionUser(userId)
-        )
+        switchMap((userId: number) => {
+          console.log(3, 'shit');
+          return this.connectionProfileService.addConnectionUser(userId);
+        })
       )
       .pipe(take(1))
       .subscribe();

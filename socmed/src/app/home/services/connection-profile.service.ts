@@ -27,9 +27,7 @@ export class ConnectionProfileService {
     );
   }
 
-  addConnecctionUser(
-    id: number
-  ): Observable<FriendRequest | { error: string }> {
+  addConnectionUser(id: number): Observable<FriendRequest | { error: string }> {
     return this.http.post<FriendRequest | { error: string }>(
       `${environment.baseApiUrl}/user/friend-request/send/${id}`,
       {},
