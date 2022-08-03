@@ -6,9 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit {
+   body = '';
+  constructor() {}
 
-  constructor() { }
+  onCreatePost(body: string) {
+    console.log('create home');
+    this.body = body;
+    console.log('this.bdy', this.body);
+  }
 
-  ngOnInit() {}
-
-}
+  ngOnInit() {}}
