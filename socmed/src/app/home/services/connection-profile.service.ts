@@ -34,4 +34,20 @@ export class ConnectionProfileService {
       this.httpOptions
     );
   }
+  getFriendRequests(): Observable<FriendRequest[]> {
+    return this.http.get<FriendRequest[]>(
+      `${environment.baseApiUrl}/user/friend-request/me/received-requests`
+    );
+  }
+
+  responseToFriendRequest(
+    id: number,
+    statusResponse: 'accepted' | 'declined'
+  ): Observable<FriendRequest> {
+    return this.http.post<FriendRequest>(
+      `${environment.baseApiUrl}/user/friend-request/response/${id}`,
+      { status: statusResponse },
+      this.httpOptions
+    );
+  }
 }
