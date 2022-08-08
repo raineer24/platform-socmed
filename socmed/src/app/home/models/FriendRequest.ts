@@ -1,5 +1,4 @@
-import { User } from './user.class';
-
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type FriendRequest_Status =
   | 'not-sent'
   | 'pending'
@@ -12,8 +11,8 @@ export interface FriendRequestStatus {
 }
 
 export interface FriendRequest {
-  id?: number;
-  creator?: User;
-  receiver?: User;
+  id: number;
+  creatorId: number;
+  receiverId: number;
   status?: FriendRequest_Status;
 }

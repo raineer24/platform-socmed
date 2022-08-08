@@ -3,7 +3,8 @@
     <div class="toolbar-wrapper">
       <ion-buttons slot="start" class="ion-no-padding">
         <ion-button>
-          <ion-icon color="primary" class="linkedin-logo" name="logo-linkedin"></ion-icon>
+          <ion-icon color="primary" class="linkedin-logo" name="logo-linkedin" style="cursor: pointer"
+            [routerLink]="['/home']"></ion-icon>
         </ion-button>
         <ion-searchbar color="tertiary" class="ion-hide-lg-down" placeholder="Search">
         </ion-searchbar>
@@ -15,8 +16,22 @@
             <ion-icon name="home"></ion-icon>
             <div>Home</div>
           </ion-col>
-          <ion-col class="ion-hide-md-down" size="auto">
+          <ion-col (click)="
+              this.connectionProfileService.friendRequests?.length > 0 &&
+              presentFriendRequestPopover($event)
+              " class="ion-hide-md-down" size="auto">
             <ion-icon name="people"></ion-icon>
+            <ion-badge color="danger" style="
+                position: absolute;
+                margin-left: -8px;
+                margin-top: -5px;
+                height: 16px;
+                width: 16px;
+                border-radius: 9999px;
+              ">
+              {{ this.connectionProfileService.friendRequests?.length || 0 }}
+
+            </ion-badge>
             <div>My Network</div>
           </ion-col>
           <ion-col class="ion-hide-md-down" size="auto">
