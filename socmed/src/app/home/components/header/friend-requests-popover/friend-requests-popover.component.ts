@@ -15,6 +15,7 @@ export class FriendRequestsPopoverComponent implements OnInit {
     this.connectionProfileService.friendRequests.map(
       (friendRequest: FriendRequest) => {
         const creatorId = (friendRequest as any)?.creator?.id;
+        console.log('creatorID', creatorId);
         if (friendRequest && creatorId) {
           this.connectionProfileService
             .getConnectionUser(creatorId)

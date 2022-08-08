@@ -25,6 +25,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    console.log(
+      'header friendREquest',
+      this.connectionProfileService.friendRequests
+    );
     this.userImagePathSubscription =
       this.authService.userFullImagePath.subscribe((fullImagePath: string) => {
         this.userFullImagePath = fullImagePath;
@@ -34,11 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .getFriendRequests()
       .subscribe((friendRequests: FriendRequest[]) => {
         this.connectionProfileService.friendRequests = friendRequests.filter(
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          (friendRequests: FriendRequest) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            friendRequests.status === 'pending';
-          }
+          (friendRequest: FriendRequest) => friendRequest.status === 'pending'
         );
       });
   }
@@ -71,5 +71,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userImagePathSubscription.unsubscribe();
+    this.friendRequestsSubscription.unsubscribe();
   }
 }
