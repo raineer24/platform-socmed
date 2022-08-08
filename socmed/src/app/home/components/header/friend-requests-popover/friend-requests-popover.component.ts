@@ -55,7 +55,12 @@ export class FriendRequestsPopoverComponent implements OnInit {
     this.connectionProfileService.friendRequests = unhandledFriendRequests;
 
     if (this.connectionProfileService?.friendRequests.length === 0) {
-      await this.popoverC;
+      await this.popoverController.dismiss();
     }
+
+    return this.connectionProfileService
+      .responseToFriendRequest(id, statusResponse)
+      .pipe(take(1))
+      .subscribe();
   }
 }
