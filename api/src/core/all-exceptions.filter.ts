@@ -5,10 +5,12 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+
 import {
   CustomHttpExceptionResponse,
   HttpExceptionResponse,
 } from './models/http-exception-response.interface';
+import { Response, Request } from 'express';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -33,4 +35,27 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     const errorResponse: CustomHttpExceptionResponse = {};
   }
+
+  private getErrorResponse = (
+    status: HttpStatus,
+    errorMessage: string,
+    request: Request,
+  ): CustomHttpExceptionResponse => ({
+    statusCode: status,
+    error: errorMessage,
+    path: request.url,
+    method: request.method,
+    timeStamp: new Date(),
+  });
+
+  private logError = (
+    errorResponse: CustomHttpExceptionResponse,
+    request: Request,
+    exception: unknown,
+  ): void => {
+    const { statusCode, error } = errorResponse;
+    const { method, url } = request;
+    const errorLog = `Response Code: ${statusCode} - Method: ${method} - URL: ${url}\n\n
+    ${JSON.stringify(request.user ?? 'Not signed in')}\n\n`;
+  };
 }
