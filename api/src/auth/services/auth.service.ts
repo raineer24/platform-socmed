@@ -51,13 +51,13 @@ export class AuthService {
     ).pipe(
       switchMap((user: User) => {
         if (!user) {
-          throw new HttpException(
-            {
-              status: HttpStatus.NOT_FOUND,
-              error: 'Invalid Credentials',
-            },
-            HttpStatus.NOT_FOUND,
-          );
+          // throw new HttpException(
+          //   {
+          //     status: HttpStatus.NOT_FOUND,
+          //     error: 'Invalid Credentials',
+          //   },
+          //   HttpStatus.NOT_FOUND,
+          // );
         }
         return from(bcrypt.compare(password, user.password)).pipe(
           map((isValidPassword: boolean) => {

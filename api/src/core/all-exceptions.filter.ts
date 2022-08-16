@@ -57,7 +57,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const { statusCode, error } = errorResponse;
     const { method, url } = request;
     const errorLog = `Response Code: ${statusCode} - Method: ${method} - URL: ${url}\n\n
-    ${JSON.stringify(request.user ?? 'Not signed in')}\n\n
+    User: ${JSON.stringify(request.user ?? 'Not signed in')}\n\n
     ${exception instanceof HttpException ? exception.stack : error}\n\n`;
     console.log(7, errorLog);
   };
