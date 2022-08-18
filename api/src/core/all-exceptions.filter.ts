@@ -11,6 +11,7 @@ import {
   HttpExceptionResponse,
 } from './models/http-exception-response.interface';
 import { Response, Request } from 'express';
+import * as fs from 'fs';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -34,7 +35,9 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     const errorResponse = this.getErrorResponse(status, errorMessage, request);
-    this.logError(errorResponse, request, exception);
+    const errorLog = this.getErrorLog(errorResponse, request, exception);
+    this.writeErrorLogToFile(errorLog);
+    response.status(status).json(errorResponse);
   }
 
   private getErrorResponse = (
@@ -49,16 +52,24 @@ export class AllExceptionFilter implements ExceptionFilter {
     timeStamp: new Date(),
   });
 
-  private logError = (
+  private getErrorLog = (
     errorResponse: CustomHttpExceptionResponse,
     request: Request,
     exception: unknown,
-  ): void => {
+  ): string => {
     const { statusCode, error } = errorResponse;
     const { method, url } = request;
     const errorLog = `Response Code: ${statusCode} - Method: ${method} - URL: ${url}\n\n
+    ${JSON.stringify(errorResponse)}\n\n
     User: ${JSON.stringify(request.user ?? 'Not signed in')}\n\n
     ${exception instanceof HttpException ? exception.stack : error}\n\n`;
     console.log(7, errorLog);
+    return errorLog;
+  };
+
+  private writeErrorLogToFile = (errorLog: string): void => {
+    fs.appendFile('error.log', errorLog, 'utf8', (err) => {
+      if (err) throw err;
+    });
   };
 }
