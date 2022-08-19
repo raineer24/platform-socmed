@@ -4,11 +4,17 @@ import { Post } from '../models/post.interface';
 import { environment } from 'src/environments/environment';
 import { catchError, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { ErrorHandleService } from 'src/app/core/error-handler.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class PostService {
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private errorHandlerService: ErrorHandleService
+  ) {
     this.authService
       .getUserImageName()
       .pipe(
@@ -31,7 +37,18 @@ export class PostService {
   };
 
   getSelectedPosts(params) {
-    return this.http.get<Post[]>(`${environment.baseApiUrl}/feed${params}`);
+    return this.http
+      .get<Post[]>(`${environment.baseApiUrl}/feed${params}`)
+      .pipe(
+        tap((posts: Post[]) => {
+          if (posts.length === 0) {
+            throw new Error('No posts to retrieve');
+          }
+        }),
+        catchError(
+          this.errorHandlerService.handleError<Post[]>('getSelectedPosts', [])
+        )
+      );
   }
 
   createPost(body: string) {
