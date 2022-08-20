@@ -85,8 +85,9 @@ export class AllPostsComponent implements OnInit, OnDestroy {
     }
     this.queryParams = `?take=${this.numberOfPosts}&skip=${this.skipPosts}`;
 
-    this.postsService.getSelectedPosts(this.queryParams).subscribe(
-      (posts: Post[]) => {
+    this.postsService
+      .getSelectedPosts(this.queryParams)
+      .subscribe((posts: Post[]) => {
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let postIndex = 0; postIndex < posts.length; postIndex++) {
           const doesAuthorHaveImage = !!posts[postIndex].author.imagePath;
@@ -105,11 +106,7 @@ export class AllPostsComponent implements OnInit, OnDestroy {
           event.target.complete();
         }
         this.skipPosts = this.skipPosts + 5;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+      });
   }
 
   loadData(event) {

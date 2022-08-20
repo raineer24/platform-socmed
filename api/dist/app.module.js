@@ -14,6 +14,8 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const feed_module_1 = require("./feed/feed.module");
 const auth_module_1 = require("./auth/auth.module");
+const core_1 = require("@nestjs/core");
+const all_exceptions_filter_1 = require("./core/all-exceptions.filter");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -34,7 +36,13 @@ AppModule = __decorate([
             auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_FILTER,
+                useClass: all_exceptions_filter_1.AllExceptionFilter,
+            },
+        ],
     })
 ], AppModule);
 exports.AppModule = AppModule;
