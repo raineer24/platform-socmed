@@ -79,8 +79,12 @@ export class UserService {
     receiverId: number,
     creator: User,
   ): Observable<FriendRequest | { error: string }> {
-    if (receiverId === creator.id)
+    console.log(receiverId);
+    console.log(creator.id);
+    if (receiverId === creator.id) {
+      console.log('ogobs');
       return of({ error: 'It is not possible to add yourself!' });
+    }
 
     return this.findUserById(receiverId).pipe(
       switchMap((receiver: User) => {
