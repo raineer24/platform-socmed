@@ -41,6 +41,7 @@ export class PostService {
       .get<Post[]>(`${environment.baseApiUrl}/feed${params}`)
       .pipe(
         tap((posts: Post[]) => {
+          console.log('posts', posts);
           if (posts.length === 0) {
             throw new Error('No posts to retrieve');
           }
