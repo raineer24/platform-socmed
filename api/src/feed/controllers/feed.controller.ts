@@ -15,7 +15,7 @@ import { FeedPost } from '../models/post.interface';
 import { FeedService } from '../services/feed.service';
 import { Observable } from 'rxjs';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/models/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -27,12 +27,12 @@ export class FeedController {
 
   // @Roles(Role.ADMIN, Role.PREMIUM)
   // @UseGuards(JwtGuard, RolesGuard)
-  //@UseGuards(JwtGuard)
+  @UseGuards(JwtGuard)
   @Post()
   create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
     return this.feedService.createPost(req.user, feedPost);
   }
-  //@UseGuards(JwtGuard)
+  @UseGuards(JwtGuard)
   @Get()
   findSelected(
     @Query('take') take = 1,
@@ -42,7 +42,7 @@ export class FeedController {
     return this.feedService.findPosts(take, skip);
   }
 
-  //@UseGuards(JwtGuard, IsCreatorGuard)
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Put(':id')
   update(
     @Param('id') id: number,
@@ -51,7 +51,7 @@ export class FeedController {
     return this.feedService.updatePost(id, feedPost);
   }
 
-  //@UseGuards(JwtGuard, IsCreatorGuard)
+  @UseGuards(JwtGuard, IsCreatorGuard)
   @Delete(':id')
   delete(@Param('id') id: number): Observable<DeleteResult> {
     return this.feedService.deletePost(id);
