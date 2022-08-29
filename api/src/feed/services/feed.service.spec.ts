@@ -33,11 +33,12 @@ describe('FeedService', () => {
         };
       }),
 
-    // updatePost: jest.fn().mockImplementation(() => {
-    //   return mockUpdateResult;
-    // }),
+    save: jest
+      .fn()
+      .mockImplementation((feedPost: FeedPost) =>
+        Promise.resolve({ id: 1, ...feedPost }),
+      ),
   };
-  const mockUserService = {};
 
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -58,10 +59,15 @@ describe('FeedService', () => {
     expect(feedService).toBeDefined();
   });
 
-  //   it('should create a feed post', () => {
-  //     expect(feedController.create(mockFeedPost, mockRequest)).toEqual({
-  //       id: expect.any(Number),
-  //       ...mockFeedPost,
-  //     });
-  //   });
+  it('should create a feed post', (done: jest.DoneCallback) => {
+    feedService
+      .createPost(mockRequest.user, mockFeedPost)
+      .subscribe((feedPost: FeedPost) => {
+        expect(feedPost).toEqual({
+          id: expect.any(Number),
+          ...mockFeedPost,
+        });
+        done();
+      });
+  });
 });
