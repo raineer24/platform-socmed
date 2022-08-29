@@ -23,57 +23,45 @@ describe('FeedService', () => {
     author: mockRequest.user,
   };
 
-  const mockFeedService = {
+  const mockFeedPostRepository = {
     createPost: jest
       .fn()
       .mockImplementation((user: User, feedPost: FeedPost) => {
         return {
-          id: 1,
           ...feedPost,
+          author: user,
         };
       }),
-    findPosts: jest
-      .fn()
-      .mockImplementation((numberToTake: number, numberToSkip: number) => {
-        const feedPostsAfterSkipping = mockFeedPosts.slice(numberToSkip);
-        const filteredFeedPosts = feedPostsAfterSkipping.slice(0, numberToTake);
-        return filteredFeedPosts;
-      }),
-    updatePost: jest.fn().mockImplementation(() => {
-      return mockUpdateResult;
-    }),
-    deletePost: jest.fn().mockImplementation(() => {
-      return mockDeleteResult;
-    }),
+
+    // updatePost: jest.fn().mockImplementation(() => {
+    //   return mockUpdateResult;
+    // }),
   };
   const mockUserService = {};
 
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
-      controllers: [FeedController],
       providers: [
         FeedService,
 
         {
-          provide: JwtGuard,
-          useValue: jest.fn().mockImplementation(() => true),
+          provide: getRepositoryToken(FeedPostEntity),
+          useValue: mockFeedPostRepository,
         },
       ],
     }).compile();
+
+    feedService = moduleRef.get<FeedService>(FeedService);
   });
 
   it('should be defined', () => {
-    expect(feedController).toBeDefined();
+    expect(feedService).toBeDefined();
   });
 
-  it('should create a feed post', () => {
-    expect(feedController.create(mockFeedPost, mockRequest)).toEqual({
-      id: expect.any(Number),
-      ...mockFeedPost,
-    });
-  });
-
-  it('should get 2 feed posts, skipping the first', () => {
-    expect(feedController.findSelected(2, 1)).toEqual(mockFeedPosts.slice(1));
-  });
+  //   it('should create a feed post', () => {
+  //     expect(feedController.create(mockFeedPost, mockRequest)).toEqual({
+  //       id: expect.any(Number),
+  //       ...mockFeedPost,
+  //     });
+  //   });
 });
