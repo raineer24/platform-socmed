@@ -14,6 +14,7 @@ import { UserService } from '../../auth/services/user.service';
 import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
 import { User } from '../../auth/models/user.class';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 describe('FeedController', () => {
   let feedService: FeedService;
@@ -36,6 +37,16 @@ describe('FeedController', () => {
     { ...mockFeedPost, body: 'third feed post' },
   ];
 
+  const mockDeleteResult: DeleteResult = {
+    raw: [],
+    affected: 1,
+  };
+
+  const mockUpdateResult: UpdateResult = {
+    ...mockDeleteResult,
+    generatedMaps: [],
+  };
+
   const mockFeedService = {
     createPost: jest
       .fn()
@@ -52,6 +63,12 @@ describe('FeedController', () => {
         const filteredFeedPosts = feedPostsAfterSkipping.slice(0, numberToTake);
         return filteredFeedPosts;
       }),
+    updatePost: jest.fn().mockImplementation(() => {
+      return mockUpdateResult;
+    }),
+    deletePost: jest.fn().mockImplementation(() => {
+      return mockDeleteResult;
+    }),
   };
   const mockUserService = {};
 
@@ -93,5 +110,14 @@ describe('FeedController', () => {
 
   it('should get 2 feed posts, skipping the first', () => {
     expect(feedController.findSelected(2, 1)).toEqual(mockFeedPosts.slice(1));
+  });
+
+  it('should update a feed post', () => {
+    expect(
+      feedController.update(1, { ...mockFeedPost, body: 'updated body' }),
+    ).toEqual(mockUpdateResult);
+  });
+  it('should delete a feed post', () => {
+    expect(feedController.delete(1)).toEqual(mockDeleteResult);
   });
 });
