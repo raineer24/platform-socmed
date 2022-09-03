@@ -72,10 +72,10 @@ export class AuthService {
         if (!user) {
           throw new HttpException(
             {
-              status: HttpStatus.NOT_FOUND,
+              status: HttpStatus.FORBIDDEN,
               error: 'Invalid Credentials',
             },
-            HttpStatus.NOT_FOUND,
+            HttpStatus.FORBIDDEN,
           );
         }
         return from(bcrypt.compare(password, user.password)).pipe(

@@ -1,5 +1,6 @@
 import * as request from 'supertest';
 import { User } from 'src/auth/models/user.class';
+import * as jwt from 'jsonwebtoken';
 import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
@@ -39,6 +40,32 @@ describe('AuthController', () => {
         .set('Accept', 'application/json')
         .send(mockUser)
         .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('it should not log in nor return a JWT for an unregistered user', () => {
+      return request(authUrl)
+        .post('/login')
+        .set('Accept', 'application/json')
+        .send({ email: 'doesnotexist@gmail.com', password: 'password' })
+        .expect((response: request.Response) => {
+          const { token }: { token: string } = response.body;
+
+          expect(token).toBeUndefined();
+        })
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('it should log in nor return a JWT for a registered user', () => {
+      return request(authUrl)
+        .post('/login')
+        .set('Accept', 'application/json')
+        .send(mockUser)
+        .expect((response: request.Response) => {
+          const { token }: { token: string } = response.body;
+
+          expect(jwt.verify(token, 'jwtsecret')).toBeTruthy();
+        })
+        .expect(HttpStatus.OK);
     });
   });
 });
