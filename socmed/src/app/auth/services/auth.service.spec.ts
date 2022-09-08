@@ -49,6 +49,10 @@ describe('AuthService', () => {
         expect(user.firstName).toBeNull();
         expect(user.posts).toBeNull();
       });
+
+      done();
     });
+
+    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
   });
 });
