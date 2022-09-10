@@ -1,9 +1,11 @@
-import { NewUser } from '../models/newUser.model';
-
 import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
-import { User } from '../models/user.model';
+
 import { of, throwError } from 'rxjs';
+
+import { AuthService } from './auth.service';
+
+import { NewUser } from '../models/newUser.model';
+import { User } from '../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 let httpClientSpy: { post: jasmine.Spy };
@@ -12,14 +14,14 @@ let routerSpy: Partial<Router>;
 let authService: AuthService;
 
 const mockNewUser: NewUser = {
-  firstName: 'Eugene',
-  lastName: 'Sances',
-  email: 'eugenesanchez5@gmail.com  ',
+  firstName: 'Jon',
+  lastName: 'Peppinck',
+  email: 'jon@hotmail.com',
   password: 'password',
 };
 
 beforeEach(() => {
-  httpClientSpy = jasmine.createSpyObj('HtttpClient', ['post']);
+  httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
   routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
   authService = new AuthService(httpClientSpy as any, routerSpy as any);
@@ -30,9 +32,9 @@ describe('AuthService', () => {
     it('should return the user', (done: DoneFn) => {
       const expectedUser: User = {
         id: 1,
-        firstName: 'Eugene',
-        lastName: 'Sances',
-        email: 'eugenesanchez5@gmail.com  ',
+        firstName: 'Jon',
+        lastName: 'Peppinck',
+        email: 'jon@hotmail.com',
         role: 'user',
         imagePath: null,
         posts: null,
@@ -41,7 +43,7 @@ describe('AuthService', () => {
       httpClientSpy.post.and.returnValue(of(expectedUser));
 
       authService.register(mockNewUser).subscribe((user: User) => {
-        expect(typeof user.id).toEqual('number');
+        expect(typeof user.id).toBe('number');
         expect(user.firstName).toEqual(mockNewUser.firstName);
         expect(user.lastName).toEqual(mockNewUser.lastName);
         expect(user.email).toEqual(mockNewUser.email);
@@ -49,28 +51,30 @@ describe('AuthService', () => {
         expect(user.role).toEqual('user');
         expect(user.imagePath).toBeNull();
         expect(user.posts).toBeNull();
+
         done();
       });
+
       expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
     });
 
-    it('should return an error if email already exists', (done: DoneFn) => {
-      const errorResponse = new HttpErrorResponse({
-        error: 'A user had already been created with this email address',
-        status: 400,
-      });
+    // it('should return an error if email already exists', (done: DoneFn) => {
+    //   const errorResponse = new HttpErrorResponse({
+    //     error: 'A user had already been created with this email address',
+    //     status: 400,
+    //   });
 
-      httpClientSpy.post.and.returnValue(throwError(() => errorResponse));
+    //   httpClientSpy.post.and.returnValue(throwError(() => errorResponse));
 
-      authService.register(mockNewUser).subscribe({
-        next: () => {
-          done.fail('expected a bad request error');
-        },
-        error: (httpErrorResponse: HttpErrorResponse) => {
-          expect(httpErrorResponse.error).toContain('already been created');
-          done();
-        },
-      });
-    });
+    //   authService.register(mockNewUser).subscribe({
+    //     next: () => {
+    //       done.fail('expected a bad request error');
+    //     },
+    //     error: (httpErrorResponse: HttpErrorResponse) => {
+    //       expect(httpErrorResponse.error).toContain('already been created');
+    //       done();
+    //     },
+    //   });
+    // });
   });
 });
