@@ -3,7 +3,8 @@ import { NewUser } from '../models/newUser.model';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 let httpClientSpy: { post: jasmine.Spy };
 let routerSpy: Partial<Router>;
@@ -46,13 +47,30 @@ describe('AuthService', () => {
         expect(user.email).toEqual(mockNewUser.email);
         expect((user as any).password).toBeUndefined();
         expect(user.role).toEqual('user');
-        expect(user.firstName).toBeNull();
+        expect(user.imagePath).toBeNull();
         expect(user.posts).toBeNull();
+        done();
       });
-
-      done();
+      expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
     });
 
-    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+    it('should return an error if email already exists', (done: DoneFn) => {
+      const errorResponse = new HttpErrorResponse({
+        error: 'A user had already been created with this email address',
+        status: 400,
+      });
+
+      httpClientSpy.post.and.returnValue(throwError(() => errorResponse));
+
+      authService.register(mockNewUser).subscribe({
+        next: () => {
+          done.fail('expected a bad request error');
+        },
+        error: (httpErrorResponse: HttpErrorResponse) => {
+          expect(httpErrorResponse.error).toContain('already been created');
+          done();
+        },
+      });
+    });
   });
 });
