@@ -16,6 +16,7 @@ const feed_module_1 = require("./feed/feed.module");
 const auth_module_1 = require("./auth/auth.module");
 const core_1 = require("@nestjs/core");
 const all_exceptions_filter_1 = require("./core/all-exceptions.filter");
+const chat_module_1 = require("./chat/chat.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -34,6 +35,7 @@ AppModule = __decorate([
             }),
             feed_module_1.FeedModule,
             auth_module_1.AuthModule,
+            chat_module_1.ChatModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
