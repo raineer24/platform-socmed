@@ -250,4 +250,15 @@ export class UserService {
       }),
     );
   }
+
+  getFriends(currentUser: User): Observable<User[]> {
+    return from(
+      this.friendRequestRepository.find({
+        where: [
+          { creator: currentUser, status: 'accepted' },
+          { receiver: currentUser, status: 'accepted' },
+        ],
+      }),
+    );
+  }
 }
