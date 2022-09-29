@@ -267,6 +267,7 @@ export class UserService {
 
         friends.forEach((friend: FriendRequest) => {
           if (friend.creator.id === currentUser.id) {
+            console.log('riend.creator.id ', friend.creator.id);
             userIds.push(friend.receiver.id);
           } else if (friend.receiver.id === currentUser.id) {
             userIds.push(friend.creator.id);

@@ -18,7 +18,7 @@ import { ChatModule } from './chat/chat.module';
       port: parseInt(<string>process.env.POSTGRES_PORT),
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      database: 'nerblog',
+      database: 'sammy',
       autoLoadEntities: true,
       synchronize: true, // shouldn't be used in production - may lose data
     }),
