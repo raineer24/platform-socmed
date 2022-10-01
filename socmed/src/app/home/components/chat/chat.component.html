@@ -68,17 +68,17 @@
       <ion-col>
         <ion-avatar>
           <ion-img
-          *ngIf="friend.imagePath;"
-          [src]="
-            'http://localhost:3000/api/feed/image/blank-profile-picture.png' 
-          "
-        ></ion-img>
+                
+                [src]="
+                  'http://localhost:3000/api/feed/image/blank-profile-picture.png'
+                "
+              ></ion-img>
   
         
         </ion-avatar>
       </ion-col>
       <ion-col>
-        <p> {{message}}</p>
+        <p> {{ message }}</p>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -104,7 +104,7 @@
       <span>
         <ion-button style="width: 55px;" [disabled]="!form.valid" type="submit" shape="round">send</ion-button>
         <ion-button shape="round" color="dark" fill="clear">
-          <ion-icon name="ellipses-outline"></ion-icon>
+          <ion-icon name="ellipsis-outline"></ion-icon>
         </ion-button>
       </span>
     </ion-row>
