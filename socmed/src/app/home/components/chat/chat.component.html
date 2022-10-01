@@ -5,12 +5,26 @@
           <ion-text color="dark">Messaging</ion-text>
         </div>
         <div>
+          <ion-button 
+            style="margin-right: -30px" 
+            shape="round" color="dark" 
+            fill="clear"
+          >
+            <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+          </ion-button>
           <ion-button shape="round" color="dark" fill="clear">
-            <ion-icon name="ellipsis--outline"></ion-icon>
+            <ion-icon name="create-outline"></ion-icon>
           </ion-button>
         </div>
     </div>
-    
+    <div class="friend" *ngFor="let friend of friends">
+      <ion-grid>
+        <ion-row class="ion-align-items-center ion-justify-content-center">
+        <ion-col></ion-col>
+        <ion-col></ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
   </div>
   <div class="chat">
     <div class="top-panel"></div>
