@@ -84,9 +84,31 @@
   </ion-grid>
   <form #form="ngForm" (ngSubmit)="onSubmit()">
     <ion-item>
-      <ion-input ngModel type="text" name="message"></ion-input>
+      <ion-textarea ngModel type="text" name="message" placeholder="Write a message..." required></ion-textarea>
     </ion-item>
-    <ion-button [disabled]="!form.valid" type="submit" shape="round" expand="block">send message</ion-button>
+    <ion-row class="ion-align-items-center ion-justify-content-button">
+      <span>
+        <ion-button style="margin-right: -20px;" shape="round" color="dark" fill="clear">
+          <ion-icon name="image-outline"></ion-icon>
+        </ion-button>
+        <ion-button style="margin-right: -20px;" shape="round" color="dark" fill="clear">
+          <ion-icon name="document-outline"></ion-icon>
+        </ion-button>
+        <ion-button style="margin-right: -20px;" shape="round" color="dark" fill="clear">
+          <ion-icon name="film-outline"></ion-icon>
+        </ion-button>
+        <ion-button shape="round" color="dark" fill="clear">
+          <ion-icon name="happy-outline"></ion-icon>
+        </ion-button>
+      </span>
+      <span>
+        <ion-button style="width: 55px;" [disabled]="!form.valid" type="submit" shape="round">send</ion-button>
+        <ion-button shape="round" color="dark" fill="clear">
+          <ion-icon name="ellipses-outline"></ion-icon>
+        </ion-button>
+      </span>
+    </ion-row>
+  
   </form>
   </div>
 </ion-card>
