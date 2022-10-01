@@ -63,15 +63,31 @@
         </ion-button>
       </div>
   </div>
-  </div>
-</ion-card>
-<!-- <div style="margin: auto;margin-top: 110px;">
-  <span>Chat room</span>
-  <p *ngFor="let message of messages">{{message}}</p>
+  <ion-grid class="chat-messages">
+    <ion-row *ngFor="let message of messages" class="ion-align-items-center ion-justify-content-center">
+      <ion-col>
+        <ion-avatar>
+          <ion-img
+          *ngIf="friend.imagePath;"
+          [src]="
+            'http://localhost:3000/api/feed/image/blank-profile-picture.png' 
+          "
+        ></ion-img>
+  
+        
+        </ion-avatar>
+      </ion-col>
+      <ion-col>
+        <p> {{message}}</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <form #form="ngForm" (ngSubmit)="onSubmit()">
     <ion-item>
       <ion-input ngModel type="text" name="message"></ion-input>
     </ion-item>
     <ion-button [disabled]="!form.valid" type="submit" shape="round" expand="block">send message</ion-button>
   </form>
-</div> -->
+  </div>
+</ion-card>
+
