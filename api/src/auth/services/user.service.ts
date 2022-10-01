@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, Observable, of, switchMap } from 'rxjs';
@@ -247,6 +248,33 @@ export class UserService {
       this.friendRequestRepository.find({
         where: [{ receiver: currentUser }],
         relations: ['receiver', 'creator'],
+      }),
+    );
+  }
+
+  getFriends(currentUser: User): Observable<User[]> {
+    return from(
+      this.friendRequestRepository.find({
+        where: [
+          { creator: currentUser, status: 'accepted' },
+          { receiver: currentUser, status: 'accepted' },
+        ],
+        relations: ['creator', 'receiver'],
+      }),
+    ).pipe(
+      switchMap((friends: FriendRequest[]) => {
+        let userIds: number[] = [];
+
+        friends.forEach((friend: FriendRequest) => {
+          if (friend.creator.id === currentUser.id) {
+            console.log('riend.creator.id ', friend.creator.id);
+            userIds.push(friend.receiver.id);
+          } else if (friend.receiver.id === currentUser.id) {
+            userIds.push(friend.creator.id);
+          }
+        });
+
+        return from(this.userRepository.findByIds(userIds));
       }),
     );
   }

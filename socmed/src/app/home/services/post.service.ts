@@ -12,22 +12,10 @@ import { ErrorHandleService } from 'src/app/core/error-handler.service';
 export class PostService {
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+   
     private errorHandlerService: ErrorHandleService
   ) {
-    this.authService
-      .getUserImageName()
-      .pipe(
-        take(1),
-        tap(({ imageName }) => {
-          console.log(125, imageName);
-          const defaultImagePath = 'blank-profile-picture.png';
-          this.authService
-            .updateUserImagePath(imageName || defaultImagePath)
-            .subscribe();
-        })
-      )
-      .subscribe();
+   
   }
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
