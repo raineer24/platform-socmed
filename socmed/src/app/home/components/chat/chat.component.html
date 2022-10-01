@@ -1,4 +1,22 @@
-<div style="margin: auto;margin-top: 110px;">
+<ion-card class="container">
+  <div class="select-connection">
+    <div class="top-panel">
+        <div class="heading">
+          <ion-text color="dark">Messaging</ion-text>
+        </div>
+        <div>
+          <ion-button shape="round" color="dark" fill="clear">
+            <ion-icon name="ellipsis--outline"></ion-icon>
+          </ion-button>
+        </div>
+    </div>
+    
+  </div>
+  <div class="chat">
+    <div class="top-panel"></div>
+  </div>
+</ion-card>
+<!-- <div style="margin: auto;margin-top: 110px;">
   <span>Chat room</span>
   <p *ngFor="let message of messages">{{message}}</p>
   <form #form="ngForm" (ngSubmit)="onSubmit()">
@@ -7,4 +25,4 @@
     </ion-item>
     <ion-button [disabled]="!form.valid" type="submit" shape="round" expand="block">send message</ion-button>
   </form>
-</div>
+</div> -->
