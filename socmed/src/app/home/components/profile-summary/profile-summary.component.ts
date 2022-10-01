@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { buffer, switchMap, take } from 'rxjs/operators';
-import { Role } from 'src/app/auth/models/user.model';
+import { Role, User } from 'src/app/auth/models/user.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { fromBuffer } from 'file-type/core';
 import { BehaviorSubject, from, of, Subscription } from 'rxjs';
 import { FileTypeResult } from 'file-type';
 import { BannerColorService } from '../../services/banner-color.service';
+import { isError } from 'util';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type validFileExtension = 'png' | 'jpg' | 'jpeg';
@@ -25,7 +26,7 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   validMimeTypes: validMimeType[] = ['image/png', 'image/jpg', 'image/jpeg'];
   userFullImagePath: string;
 
-  // private userSubscription: Subscription;
+  private userSubscription: Subscription;
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
 
@@ -43,23 +44,36 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
       file: new FormControl(null),
     });
 
-    this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
-      this.bannerColorService.bannerColors =
-        this.bannerColorService.getBannerColors(role);
-    });
-
-    this.authService.userFullName
-      .pipe(take(1))
-      .subscribe((fullName: string) => {
-        this.fullName = fullName;
-        console.log('fullname', this.fullName);
-        this.fullName$.next(fullName);
-      });
-
     this.userImagePathSubscription =
       this.authService.userFullImagePath.subscribe((fullImagePath: string) => {
         this.userFullImagePath = fullImagePath;
       });
+
+      this.userSubscription = this.authService.userStream.subscribe((user: User) => {
+        if(user?.role) {
+          this.bannerColorService.bannerColors =
+          this.bannerColorService.getBannerColors(user.role);
+        }
+        if(user && user?.firstName && user?.lastName) {
+          this.fullName = user.firstName + ' ' + user.lastName;
+          this.fullName$.next(this.fullName);
+        }
+      })
+
+    // this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
+    //   this.bannerColorService.bannerColors =
+    //     this.bannerColorService.getBannerColors(role);
+    // });
+
+    // this.authService.userFullName
+    //   .pipe(take(1))
+    //   .subscribe((fullName: string) => {
+    //     this.fullName = fullName;
+    //     console.log('fullname', this.fullName);
+    //     this.fullName$.next(fullName);
+    //   });
+
+    
   }
 
   onFileSelect(event: Event): void {
@@ -108,5 +122,6 @@ export class ProfileSummaryComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   ngOnDestroy() {
     this.userImagePathSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 }

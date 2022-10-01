@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { buffer, switchMap, take } from 'rxjs/operators';
+import { PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-popover',
@@ -16,7 +17,8 @@ export class PopoverComponent implements OnInit, OnDestroy {
   fullName = '';
 
   private userImagePathSubscription: Subscription;
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, 
+    private popoverController: PopoverController) {}
 
   ngOnInit() {
     this.userImagePathSubscription =
@@ -33,8 +35,10 @@ export class PopoverComponent implements OnInit, OnDestroy {
       });
   }
 
-  onSignOut() {
+  async onSignOut() {
+    await this.popoverController.dismiss();
     this.authService.logout();
+    location.reload();
   }
 
   ngOnDestroy() {

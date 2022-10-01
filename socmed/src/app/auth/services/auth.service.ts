@@ -37,8 +37,11 @@ export class AuthService {
 
   get userRole(): Observable<Role> {
     return this.user$
-      .asObservable()
-      .pipe(switchMap((user: User) => of(user.role)));
+      .asObservable().pipe(
+        switchMap((user: User) => {
+        return of(user?.role);
+      })
+      );
   }
 
   get userId(): Observable<number> {
@@ -50,6 +53,9 @@ export class AuthService {
   get userFullName(): Observable<string> {
     return this.user$.asObservable().pipe(
       switchMap((user: User) => {
+        if(!user) {
+          return of(null);
+        }
         const fullName = user.firstName + ' ' + user.lastName;
         console.log('fullName', fullName);
         return of(fullName);
