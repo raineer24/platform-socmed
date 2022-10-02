@@ -16,26 +16,32 @@ export class ChatComponent implements OnInit, OnDestroy {
   messages: string[] = [];
 
   userFullImagePath: string;
-  private userImagePathSubscription: Subscription;
+  
   private userIdSubscription: Subscription;
 
   friends: User[] = [];
   friend: User;
   friend$: BehaviorSubject<User> = new BehaviorSubject<User>({});
-
+  
+  private userImagePathSubscription: Subscription;
+  private messagesSubscription: Subscription;
+  private conversationSubscription: Subscription;
+  private friendsSubscription: Subscription;
+  private friendSubscription: Subscription;
+  
   selectedConversationIndex: number = 0;
 
   constructor(private chatService: ChatService, private authService: AuthService) {}
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.userImagePathSubscription = this.authService.userFullImagePath.subscribe((fullimagePath: string) => {
       this.userFullImagePath = fullimagePath;
     })
-    this.chatService.getNewMessage().subscribe((message: string) => {
+    this.messagesSubscription = this.chatService.getNewMessage().subscribe((message: string) => {
       this.messages.push(message);
     });
 
-    this.chatService.getFriends().subscribe((friends: User[]) => {
+    this.friendsSubscription = this.chatService.getFriends().subscribe((friends: User[]) => {
       console.log(2, friends);
       this.friends = friends;
     })
@@ -54,7 +60,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selectedConversationIndex = index;
   }
 
-  ngOnDestroy(): void {
+  ionViewDidLeave() {
     this.userImagePathSubscription.unsubscribe();
+    this.messagesSubscription.unsubscribe();
+    this.friendsSubscription.unsubscribe();
   }
 }
