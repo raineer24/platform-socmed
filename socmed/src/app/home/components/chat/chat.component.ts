@@ -4,13 +4,14 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { User } from 'src/app/auth/models/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { ChatSocketService } from 'src/app/core/chat-socket.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent {
   @ViewChild('form') form: NgForm;
   newMessage$: Observable<string>;
   messages: string[] = [];
@@ -31,7 +32,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   
   selectedConversationIndex: number = 0;
 
-  constructor(private chatService: ChatService, private authService: AuthService) {}
+  constructor(private chatService: ChatService, 
+    private authService: AuthService,
+    private chatSocketService: ChatSocketService) {}
 
   ionViewDidEnter() {
     console.log("did enter");
