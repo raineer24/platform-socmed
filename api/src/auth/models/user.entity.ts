@@ -9,6 +9,7 @@ import {
 import { FeedPostEntity } from '../../feed/models/post.entity';
 import { Role } from './role.enum';
 import { FriendRequestEntity } from './friend-request.entity';
+import { ConversationEntity } from 'src/chat/models/conversation.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -47,4 +48,10 @@ export class UserEntity {
     (friendRequestEntity) => friendRequestEntity.receiver,
   )
   receivedFriendRequests: FriendRequestEntity[];
+
+  @ManyToMany(
+    () => ConversationEntity,
+    (conversationEntity) => conversationEntity.users,
+  )
+  conversations: ConversationEntity[];
 }
