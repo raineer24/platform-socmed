@@ -34,6 +34,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(private chatService: ChatService, private authService: AuthService) {}
 
   ionViewDidEnter() {
+    console.log("did enter");
     this.userImagePathSubscription = this.authService.userFullImagePath.subscribe((fullimagePath: string) => {
       this.userFullImagePath = fullimagePath;
     })
@@ -61,6 +62,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ionViewDidLeave() {
+    console.log("did leave");
     this.userImagePathSubscription.unsubscribe();
     this.messagesSubscription.unsubscribe();
     this.friendsSubscription.unsubscribe();

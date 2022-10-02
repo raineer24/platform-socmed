@@ -18,6 +18,7 @@ options: {
 export class ChatSocketService extends Socket{
 
   constructor() {
+    console.log("socket");
     super(config);
   }
 }
