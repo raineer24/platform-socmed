@@ -1,8 +1,19 @@
 import { UserEntity } from 'src/auth/models/user.entity';
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('message')
 export class MessageEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  message: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }
