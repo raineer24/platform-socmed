@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { User } from 'src/app/auth/models/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
@@ -20,6 +20,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   private userIdSubscription: Subscription;
 
   friends: User[] = [];
+  friend: User;
+  friend$: BehaviorSubject<User> = new BehaviorSubject<User>({});
+
+  selectedConversationIndex: number = 0;
+
   constructor(private chatService: ChatService, private authService: AuthService) {}
 
   ngOnInit() {
@@ -43,6 +48,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     this.chatService.sendMessage(message);
     this.form.reset();
+  }
+
+  openConversation(friend: User, index: number): void {
+    this.selectedConversationIndex = index;
   }
 
   ngOnDestroy(): void {
