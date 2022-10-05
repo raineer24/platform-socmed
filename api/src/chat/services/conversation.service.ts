@@ -81,7 +81,21 @@ export class ConversationService {
     );
   }
 
-  joinConversation() {}
+  joinConversation(
+    friendId: number,
+    userId: number,
+    socketId: string,
+  ): Observable<ActiveConversation> {
+    return this.getConversation(userId, friendId).pipe(
+      switchMap((conversation: Conversation) =>{
+        if(!conversation) {
+          console.warn(
+            `No conversation exists for userId: ${userId} and friendId: ${friendId}`
+          )
+        }
+      })
+    )
+  }
 
 
 }

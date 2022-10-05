@@ -9,25 +9,33 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AuthService } from 'src/auth/services/auth.service';
+import { ConversationService } from '../services/conversation.service';
 
 @WebSocketGateway({ cors: { origin: ['http://localhost:8100'] } })
 export class ChatGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit
 {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private conversationService: ConversationService,
+  ) {}
+
+  // Note: Runs when server starts - Remove in production
   onModuleInit() {
     throw new Error('Method not implemented.');
   }
   handleDisconnect() {
-    console.log('disconnected');
+    console.log('HANDLE DISCONNECT');
   }
   @WebSocketServer()
   server: Server;
 
   @UseGuards(JwtGuard)
   handleConnection() {
-    console.log('connection made');
+    console.log('HANDLE CONNECTION');
   }
+
+  getConversations() {}
 
   @SubscribeMessage('sendMessage')
   handleMessage(socket: Socket, message: string) {
