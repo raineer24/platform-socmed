@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable, of, switchMap } from 'rxjs';
+import { from, map, mergeMap, Observable, of, switchMap, take } from 'rxjs';
 import { User } from 'src/auth/models/user.class';
 import { Repository } from 'typeorm';
 import { ActiveConversationEntity } from '../models/active-conversation.entity';
@@ -49,11 +49,37 @@ export class ConversationService {
     );
   }
 
-  getConversationsForUser() {}
+  getConversationsForUser(userId: number): Observable<Conversation[] {
+    return from(
+      this.conversationRepository
+      .createQueryBuilder('conversation')
+      .leftJoin('conversation.users', 'user')
+      .where('user.id = :userId', { userId})
+     .orderBy('conversation.lastUpdated', 'DESC')
+     .getMany(),
 
-  getUsersInConversation() {}
+    )
+  }
 
-  getConversationsWithUsers() {}
+  getUsersInConversation(conversationId: number): Observable<Conversation[]> {
+    return from(
+      this.conversationRepository
+     .createQueryBuilder('conversation')
+     .innerJoinAndSelect('conversation.users', 'user')
+     .where('conversation.id = :conversationId', { conversationId })
+     .getMany(),)
+  }
+
+  getConversationsWithUsers(userId: number):Observable<Conversation[]> {
+    return this.getConversationsForUser(userId).pipe(
+      take(1),
+      switchMap((conversations: Conversation[]) => conversations),
+      mergeMap((conversation: Conversation) => {
+        return this.getUsersInConversation(conversation.id);
+      }),
+
+    );
+  }
 
   joinConversation() {}
 
