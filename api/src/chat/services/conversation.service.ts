@@ -96,10 +96,37 @@ export class ConversationService {
           return of();
         }
         const conversationId = conversation.id;
-        return from(this.activeConversationRepository.findOne({userId})).pipe()
+          return from(this.activeConversationRepository.findOne({userId})).pipe(
+            switchMap((activeConversation: ActiveConversation) => {
+              if(activeConversation) {
+                return from(
+                  this.activeConversationRepository.delete({userId}),
+                ).pipe(
+                  switchMap(() => {
+                    return from(
+                      this.activeConversationRepository.save({
+                        socketId,
+                        userId,
+                        conversationId
+                      })
+                    )
+                  })
+                )
+              } else {
+                return from(
+                  this.activeConversationRepository.save({
+                    socketId,
+                    userId,
+                    conversationId
+                  })
+                )
+              }
+            }) // end switchMap((activeConversation: ActiveConversation)
+          ) // end pipe findOne
+         
       })
     )
-  }
+  } // end Join conversationMethod
 
 
 }
