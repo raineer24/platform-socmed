@@ -18,8 +18,8 @@ export class ChatService {
     this.socket.emit('sendMessage', message);
   }
 
-  getNewMessage(): Observable<string> {
-    return this.socket.fromEvent<string>('newMessage');
+  getNewMessage(): Observable<Message> {
+    return this.socket.fromEvent<Message>('newMessage');
   }
 
   getFriends(): Observable<User[]> {
