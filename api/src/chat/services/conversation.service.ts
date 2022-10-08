@@ -156,6 +156,12 @@ export class ConversationService {
       )
   }
 
+  removeActiveConversations() {
+    return from(
+      this.activeConversationRepository.createQueryBuilder().delete().execute()
+    )
+  }
+
   removeMessages() {
     return from(this.messageRepository.createQueryBuilder().delete().execute())
   }
@@ -163,7 +169,7 @@ export class ConversationService {
   removeConversations() {
     return from(
       this.conversationRepository.createQueryBuilder().delete().execute(),
-    )
+    );
   }
 
 

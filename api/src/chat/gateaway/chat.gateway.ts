@@ -22,7 +22,7 @@ export class ChatGateway
 
   // Note: Runs when server starts - Remove in production
   onModuleInit() {
-    throw new Error('Method not implemented.');
+    this.conversationService.removeActiveConversations();
   }
   handleDisconnect() {
     console.log('HANDLE DISCONNECT');
