@@ -6,7 +6,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { of, take } from 'rxjs';
+import { of, take, tap } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { User } from 'src/auth/models/user.class';
@@ -107,5 +107,31 @@ export class ChatGateway
             });
         });
     }
+  }
+
+  @SubscribeMessage('joinConversation')
+  joinConversation(socket: Socket, friendId: number) {
+    this.conversationService
+      .joinConversation(friendId, socket.data.user.id, socket.id)
+      .pipe(
+        tap((activeConversation: ActiveConversation) => {
+          this.conversationService
+            .getMessages(activeConversation.conversationId)
+            .pipe(take(1))
+            .subscribe((messages: Message[]) => {
+              this.server.to(socket.id).emit('messages', messages);
+            });
+        }),
+      )
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  @SubscribeMessage('leaveConversation')
+  leaveConversation(socket: Socket) {
+    this.conversationService
+      .leaveConversation(socket.id)
+      .pipe(take(1))
+      .subscribe();
   }
 }

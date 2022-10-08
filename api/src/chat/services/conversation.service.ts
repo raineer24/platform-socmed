@@ -51,35 +51,34 @@ export class ConversationService {
     );
   }
 
-  getConversationsForUser(userId: number): Observable<Conversation[] {
+  getConversationsForUser(userId: number): Observable<Conversation[]> {
     return from(
       this.conversationRepository
-      .createQueryBuilder('conversation')
-      .leftJoin('conversation.users', 'user')
-      .where('user.id = :userId', { userId})
-     .orderBy('conversation.lastUpdated', 'DESC')
-     .getMany(),
-
-    )
+        .createQueryBuilder('conversation')
+        .leftJoin('conversation.users', 'user')
+        .where('user.id = :userId', { userId })
+        .orderBy('conversation.lastUpdated', 'DESC')
+        .getMany(),
+    );
   }
 
   getUsersInConversation(conversationId: number): Observable<Conversation[]> {
     return from(
       this.conversationRepository
-     .createQueryBuilder('conversation')
-     .innerJoinAndSelect('conversation.users', 'user')
-     .where('conversation.id = :conversationId', { conversationId })
-     .getMany(),)
+        .createQueryBuilder('conversation')
+        .innerJoinAndSelect('conversation.users', 'user')
+        .where('conversation.id = :conversationId', { conversationId })
+        .getMany(),
+    );
   }
 
-  getConversationsWithUsers(userId: number):Observable<Conversation[]> {
+  getConversationsWithUsers(userId: number): Observable<Conversation[]> {
     return this.getConversationsForUser(userId).pipe(
       take(1),
       switchMap((conversations: Conversation[]) => conversations),
       mergeMap((conversation: Conversation) => {
         return this.getUsersInConversation(conversation.id);
       }),
-        
     );
   }
 
@@ -89,51 +88,50 @@ export class ConversationService {
     socketId: string,
   ): Observable<ActiveConversation> {
     return this.getConversation(userId, friendId).pipe(
-      switchMap((conversation: Conversation) =>{
-        if(!conversation) {
+      switchMap((conversation: Conversation) => {
+        if (!conversation) {
           console.warn(
-            `No conversation exists for userId: ${userId} and friendId: ${friendId}`
+            `No conversation exists for userId: ${userId} and friendId: ${friendId}`,
           );
           return of();
         }
         const conversationId = conversation.id;
-          return from(this.activeConversationRepository.findOne({userId})).pipe(
-            switchMap((activeConversation: ActiveConversation) => {
-              if(activeConversation) {
-                return from(
-                  this.activeConversationRepository.delete({userId}),
-                ).pipe(
-                  switchMap(() => {
-                    return from(
-                      this.activeConversationRepository.save({
-                        socketId,
-                        userId,
-                        conversationId
-                      })
-                    )
-                  })
-                )
-              } else {
-                return from(
-                  this.activeConversationRepository.save({
-                    socketId,
-                    userId,
-                    conversationId
-                  })
-                )
-              }
-            }) // end switchMap((activeConversation: ActiveConversation)
-          ) // end pipe findOne
-         
-      })
-    )
+        return from(this.activeConversationRepository.findOne({ userId })).pipe(
+          switchMap((activeConversation: ActiveConversation) => {
+            if (activeConversation) {
+              return from(
+                this.activeConversationRepository.delete({ userId }),
+              ).pipe(
+                switchMap(() => {
+                  return from(
+                    this.activeConversationRepository.save({
+                      socketId,
+                      userId,
+                      conversationId,
+                    }),
+                  );
+                }),
+              );
+            } else {
+              return from(
+                this.activeConversationRepository.save({
+                  socketId,
+                  userId,
+                  conversationId,
+                }),
+              );
+            }
+          }), // end switchMap((activeConversation: ActiveConversation)
+        ); // end pipe findOne
+      }),
+    );
   } // end Join conversationMethod
 
   leaveConversation(socketId: string): Observable<DeleteResult> {
-    return from(this.activeConversationRepository.delete({socketId}));
+    return from(this.activeConversationRepository.delete({ socketId }));
   }
 
-  getActiveUsers(conversationId: number):Observable<ActiveConversation[]> {
+  getActiveUsers(conversationId: number): Observable<ActiveConversation[]> {
     return from(
       this.activeConversationRepository.find({
         where: [{ conversationId }],
@@ -142,28 +140,28 @@ export class ConversationService {
   }
 
   createMessage(message: Message): Observable<Message> {
-    return from(this.messageRepository.save(message))
+    return from(this.messageRepository.save(message));
   }
 
   getMessages(conversationId: number): Observable<Message[]> {
     return from(
       this.messageRepository
-      .createQueryBuilder('message')
-      .innerJoinAndSelect('message.user', 'user')
-      .where('message,conversation.id =:conversationId' , { conversationId})
-      .orderBy('message.createdAt', 'ASC')
-      .getMany()
-      )
+        .createQueryBuilder('message')
+        .innerJoinAndSelect('message.user', 'user')
+        .where('message,conversation.id =:conversationId', { conversationId })
+        .orderBy('message.createdAt', 'ASC')
+        .getMany(),
+    );
   }
 
   removeActiveConversations() {
     return from(
-      this.activeConversationRepository.createQueryBuilder().delete().execute()
-    )
+      this.activeConversationRepository.createQueryBuilder().delete().execute(),
+    );
   }
 
   removeMessages() {
-    return from(this.messageRepository.createQueryBuilder().delete().execute())
+    return from(this.messageRepository.createQueryBuilder().delete().execute());
   }
 
   removeConversations() {
@@ -171,6 +169,4 @@ export class ConversationService {
       this.conversationRepository.createQueryBuilder().delete().execute(),
     );
   }
-
-
 }
