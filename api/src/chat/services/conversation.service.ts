@@ -4,6 +4,7 @@ import { from, map, mergeMap, Observable, of, switchMap, take } from 'rxjs';
 import { User } from 'src/auth/models/user.class';
 import { Repository } from 'typeorm';
 import { ActiveConversationEntity } from '../models/active-conversation.entity';
+import { ActiveConversation } from '../models/active-conversation.interface';
 import { ConversationEntity } from '../models/conversation.entity';
 import { Conversation } from '../models/conversation.interface';
 import { MessageEntity } from '../models/message.entity';
@@ -77,7 +78,7 @@ export class ConversationService {
       mergeMap((conversation: Conversation) => {
         return this.getUsersInConversation(conversation.id);
       }),
-
+        
     );
   }
 
@@ -91,8 +92,11 @@ export class ConversationService {
         if(!conversation) {
           console.warn(
             `No conversation exists for userId: ${userId} and friendId: ${friendId}`
-          )
+          );
+          return of();
         }
+        const conversationId = conversation.id;
+        return from(this.activeConversationRepository.findOne({userId})).pipe()
       })
     )
   }
