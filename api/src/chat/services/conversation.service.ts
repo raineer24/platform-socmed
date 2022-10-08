@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { from, map, mergeMap, Observable, of, switchMap, take } from 'rxjs';
 import { User } from 'src/auth/models/user.class';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { ActiveConversationEntity } from '../models/active-conversation.entity';
 import { ActiveConversation } from '../models/active-conversation.interface';
 import { ConversationEntity } from '../models/conversation.entity';
 import { Conversation } from '../models/conversation.interface';
 import { MessageEntity } from '../models/message.entity';
+import { Message } from '../models/message.interface';
 
 @Injectable()
 export class ConversationService {
@@ -127,6 +128,43 @@ export class ConversationService {
       })
     )
   } // end Join conversationMethod
+
+  leaveConversation(socketId: string): Observable<DeleteResult> {
+    return from(this.activeConversationRepository.delete({socketId}));
+  }
+
+  getActiveUsers(conversationId: number):Observable<ActiveConversation[]> {
+    return from(
+      this.activeConversationRepository.find({
+        where: [{ conversationId }],
+      }),
+    );
+  }
+
+  createMessage(message: Message): Observable<Message> {
+    return from(this.messageRepository.save(message))
+  }
+
+  getMessages(conversationId: number): Observable<Message[]> {
+    return from(
+      this.messageRepository
+      .createQueryBuilder('message')
+      .innerJoinAndSelect('message.user', 'user')
+      .where('message,conversation.id =:conversationId' , { conversationId})
+      .orderBy('message.createdAt', 'ASC')
+      .getMany()
+      )
+  }
+
+  removeMessages() {
+    return from(this.messageRepository.createQueryBuilder().delete().execute())
+  }
+
+  removeConversations() {
+    return from(
+      this.conversationRepository.createQueryBuilder().delete().execute(),
+    )
+  }
 
 
 }
