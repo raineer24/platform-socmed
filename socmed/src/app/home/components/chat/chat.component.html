@@ -71,8 +71,8 @@
       <ion-col size="auto">
         <ion-avatar>
           <ion-img
-                *ngIf="userFullImagePath"
-                [src]="userFullImagePath"
+               
+                [src]="deriveFullImagePath(message.user)"
               ></ion-img>
   
         

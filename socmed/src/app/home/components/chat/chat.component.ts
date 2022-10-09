@@ -150,13 +150,13 @@ export class ChatComponent {
     let url = 'http://localhost:3000/api/feed/image';
 
     if(user.id === this.userId) {
-
-    } else if() {
-
-    } else if() {
-
+      return this.userFullImagePath;
+    } else if(user.imagePath) {
+      return url + user.imagePath;
+    } else if(this.friend.imagePath) {
+      return url + this.friend.imagePath
     } else {
-      return url + 'blank-profile-picture.png'
+      return url + 'blank-profile-picture.png';
     }
   }
 
