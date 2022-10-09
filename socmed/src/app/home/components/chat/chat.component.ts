@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { ChatSocketService } from 'src/app/core/chat-socket.service';
 import { Conversation } from '../../models/conversation';
 import { Message } from '../../models/message';
+import { throws } from 'assert';
 
 @Component({
   selector: 'app-chat',
@@ -87,14 +88,25 @@ export class ChatComponent {
           if(!allMessageIds.includes(message.id)) {
             this.messages.push(message);
           }
-        })
+        });
 
-    
+    this.friendsSubscription = this.chatService
+        .getFriends()
+        .subscribe((friends: User[]) => {
+          this.friends = friends;
 
-    this.friendsSubscription = this.chatService.getFriends().subscribe((friends: User[]) => {
-      console.log(2, friends);
-      this.friends = friends;
-    })
+          if (friends.length > 0) {
+            this.friend = this.friends[0];
+            this.friend$.next(this.friend);
+
+            friends.forEach((friend: User) => {
+              this.chatService.createConversation(friend);
+            });
+
+            this.chatService.joinConversation(this.friend.id);
+
+          }
+        });
   }
 
   onSubmit() {
@@ -102,7 +114,7 @@ export class ChatComponent {
     if (!message) {
       return;
     }
-    this.chatService.sendMessage(message);
+    this.chatService.sendMessage(message, this.conversation);
     this.form.reset();
   }
 
@@ -111,6 +123,7 @@ export class ChatComponent {
   }
 
   ionViewDidLeave() {
+    this.chatService.leaveConversation();
     console.log("did leave");
     
 
