@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { User } from 'src/app/auth/models/user.model';
 import { environment } from 'src/environments/environment';
 import { ChatSocketService } from 'src/app/core/chat-socket.service';
+import { Message } from '../models/message';
+import { Conversation } from '../models/conversation';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +16,12 @@ export class ChatService {
     private http: HttpClient,  
     private socket: ChatSocketService) {}
 
-  sendMessage(message: string): void {
-    this.socket.emit('sendMessage', message);
+  sendMessage(message: string, conversation: Conversation): void {
+    const newMessage: Message = {
+      message,
+      conversation
+    }
+    this.socket.emit('sendMessage', newMessage);
   }
 
   getNewMessage(): Observable<Message> {
@@ -25,4 +31,14 @@ export class ChatService {
   getFriends(): Observable<User[]> {
     return this.http.get<User[]>(`${environment.baseApiUrl}/user/friends/my`);
   }
+
+  createConversation() {}
+
+  joinConversation() {}
+
+  leaveConversation() {}
+
+  getConversationMessages() {}
+
+  getConversations() {}
 }
