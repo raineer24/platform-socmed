@@ -6,6 +6,7 @@ import { User } from 'src/app/auth/models/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { ChatSocketService } from 'src/app/core/chat-socket.service';
 import { Conversation } from '../../models/conversation';
+import { Message } from '../../models/message';
 
 @Component({
   selector: 'app-chat',
@@ -15,7 +16,7 @@ import { Conversation } from '../../models/conversation';
 export class ChatComponent {
   @ViewChild('form') form: NgForm;
   newMessage$: Observable<string>;
-  messages: string[] = [];
+  messages: Message[] = [];
 
   userFullImagePath: string;
   userId: number;
@@ -52,10 +53,43 @@ export class ChatComponent {
 
     this.userIdSubscription = this.authService.userId.subscribe((userId: number) => {
       this.userId = userId;
-    })
-    this.messagesSubscription = this.chatService.getNewMessage().subscribe((message: string) => {
-      this.messages.push(message);
     });
+
+    this.conversationSubscription = this.chatService
+      .getConversations()
+      .subscribe((conversations: Conversation[]) => {
+        this.conversations.push(conversations[0]); // Note:// from mergeMap stream
+      });
+
+ 
+      this.messagesSubscription = this.chatService
+      .getConversationMessages()
+      .subscribe((messages: Message[]) => {
+        messages.forEach((message: Message) => {
+          const allMessageIds = this.messages.map(
+            (message: Message) => message.id
+          );
+          if (!allMessageIds.includes(message.id)) {
+            this.messages.push(message);
+          }
+        });
+      });
+
+      this.newMessagesSubscription = this.chatService
+        .getNewMessage()
+        .subscribe((message: Message) => {
+          message.createdAt = new Date();
+
+          const allMessageIds = this.messages.map(
+            (message: Message) => message.id
+          );
+
+          if(!allMessageIds.includes(message.id)) {
+            this.messages.push(message);
+          }
+        })
+
+    
 
     this.friendsSubscription = this.chatService.getFriends().subscribe((friends: User[]) => {
       console.log(2, friends);
