@@ -120,6 +120,17 @@ export class ChatComponent {
     if (!message) {
       return;
     }
+
+    let conversationUserIds = [this.userId, this.friend.id].sort();
+
+    this.conversations.forEach((conversation: Conversation) => {
+      let userIds = conversation.users.map((user: User) => user.id).sort();
+
+      if(JSON.stringify(conversationUserIds) === JSON.stringify(userIds)) {
+        this.conversation = conversation;
+      }
+    });
+
     this.chatService.sendMessage(message, this.conversation);
     this.form.reset();
   }
