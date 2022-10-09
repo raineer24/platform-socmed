@@ -29,9 +29,10 @@ export class ConversationService {
       this.conversationRepository
         .createQueryBuilder('conversation')
         .leftJoin('conversation.users', 'user')
-        .where('conversation.creatorId = :creatorId', { creatorId })
+        .where('user.id = :creatorId', { creatorId })
         .orWhere('user.id = :friendId', { friendId })
-        .having('COUNt(*) > 1')
+        .groupBy('conversation.id')
+        .having('COUNT(*) > 1')
         .getOne(),
     ).pipe(map((conversation: Conversation) => conversation || undefined));
   }
@@ -121,11 +122,11 @@ export class ConversationService {
                 }),
               );
             }
-          }), // end switchMap((activeConversation: ActiveConversation)
-        ); // end pipe findOne
+          }),
+        );
       }),
     );
-  } // end Join conversationMethod
+  }
 
   leaveConversation(socketId: string): Observable<DeleteResult> {
     return from(this.activeConversationRepository.delete({ socketId }));
@@ -148,12 +149,13 @@ export class ConversationService {
       this.messageRepository
         .createQueryBuilder('message')
         .innerJoinAndSelect('message.user', 'user')
-        .where('message,conversation.id =:conversationId', { conversationId })
+        .where('message.conversation.id =:conversationId', { conversationId })
         .orderBy('message.createdAt', 'ASC')
         .getMany(),
     );
   }
 
+  // Note: Would remove below in production - helper methods
   removeActiveConversations() {
     return from(
       this.activeConversationRepository.createQueryBuilder().delete().execute(),
