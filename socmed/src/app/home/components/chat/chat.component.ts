@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component,ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { ChatService } from '../../services/chat.service';
 import { User } from 'src/app/auth/models/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { ChatSocketService } from 'src/app/core/chat-socket.service';
+import { Conversation } from '../../models/conversation';
 
 @Component({
   selector: 'app-chat',
@@ -17,16 +18,23 @@ export class ChatComponent {
   messages: string[] = [];
 
   userFullImagePath: string;
+  userId: number;
+
+  conversations$: Observable<Conversation[]>;
+  conversations: Conversation[] = [];
+  conversation: Conversation;
   
-  private userIdSubscription: Subscription;
+
 
   friends: User[] = [];
   friend: User;
   friend$: BehaviorSubject<User> = new BehaviorSubject<User>({});
   
   private userImagePathSubscription: Subscription;
+  private userIdSubscription: Subscription;
   private messagesSubscription: Subscription;
   private conversationSubscription: Subscription;
+  private newMessagesSubscription: Subscription;
   private friendsSubscription: Subscription;
   private friendSubscription: Subscription;
   
@@ -34,12 +42,16 @@ export class ChatComponent {
 
   constructor(private chatService: ChatService, 
     private authService: AuthService,
-    private chatSocketService: ChatSocketService) {}
+   ) {}
 
   ionViewDidEnter() {
     console.log("did enter");
     this.userImagePathSubscription = this.authService.userFullImagePath.subscribe((fullimagePath: string) => {
       this.userFullImagePath = fullimagePath;
+    });
+
+    this.userIdSubscription = this.authService.userId.subscribe((userId: number) => {
+      this.userId = userId;
     })
     this.messagesSubscription = this.chatService.getNewMessage().subscribe((message: string) => {
       this.messages.push(message);
@@ -66,8 +78,15 @@ export class ChatComponent {
 
   ionViewDidLeave() {
     console.log("did leave");
-    this.userImagePathSubscription.unsubscribe();
+    
+
+
     this.messagesSubscription.unsubscribe();
+    this.userImagePathSubscription.unsubscribe();
+    this.userIdSubscription.unsubscribe();
+    this.conversationSubscription.unsubscribe();
+    this.newMessagesSubscription.unsubscribe();
     this.friendsSubscription.unsubscribe();
+    this.friendSubscription.unsubscribe();
   }
 }

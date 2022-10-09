@@ -32,13 +32,23 @@ export class ChatService {
     return this.http.get<User[]>(`${environment.baseApiUrl}/user/friends/my`);
   }
 
-  createConversation() {}
+  createConversation(friend: User):void {
+    this.socket.emit('createConversation', friend);
+  }
 
-  joinConversation() {}
+  joinConversation(friendId: number):void {
+    this.socket.emit('joinConversation', friendId);
+  }
 
-  leaveConversation() {}
+  leaveConversation():void {
+    this.socket.emit('leaveConversation');
+  }
 
-  getConversationMessages() {}
+  getConversationMessages(): Observable<Message[]> {
+     return this.socket.fromEvent<Message[]>('Messages');
+  }
 
-  getConversations() {}
+  getConversations(): Observable<Conversation[]> {
+     return this.socket.fromEvent<Conversation[]>('conversations');
+  }
 }
