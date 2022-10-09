@@ -79,7 +79,11 @@
         </ion-avatar>
       </ion-col>
       <ion-col>
-        <p> {{ message }}</p>
+        <p> <span style="font-weight: 500;">
+        {{message.user.firstName}} {{message.user.lastName}}</span>
+          - {{ message.createdAt | date: "short"}}
+      </p>
+      <p>{{ message.message }}</p>
       </ion-col>
     </ion-row>
   </ion-grid>
