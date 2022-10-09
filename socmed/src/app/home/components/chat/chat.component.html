@@ -47,7 +47,10 @@
   <div class="chat">
     <div class="top-panel">
       <div class="friend-name-role">
-        <ion-text color="font-weight: 500">Firstname Lastname</ion-text>
+        <ion-text color="font-weight: 500" color="dark">
+          {{ friend?.firstName || "Loading...."}}
+          {{ friend?.lastName }}
+        </ion-text>
         <ion-text color="dark">Full Stack developer</ion-text>
       </div>
       <div>

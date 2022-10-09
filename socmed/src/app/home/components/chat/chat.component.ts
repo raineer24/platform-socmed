@@ -146,6 +146,20 @@ export class ChatComponent {
     this.messages = [];
   }
 
+  deriveFullImagePath(user: User): string {
+    let url = 'http://localhost:3000/api/feed/image';
+
+    if(user.id === this.userId) {
+
+    } else if() {
+
+    } else if() {
+
+    } else {
+      return url + 'blank-profile-picture.png'
+    }
+  }
+
   ionViewDidLeave() {
     this.chatService.leaveConversation();
     console.log("did leave");
