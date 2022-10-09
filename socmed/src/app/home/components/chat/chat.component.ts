@@ -76,6 +76,12 @@ export class ChatComponent {
         });
       });
 
+      this.friendSubscription = this.friend$.subscribe((friend: any) => {
+        if (JSON.stringify(friend) !== '{}') {
+          this.chatService.joinConversation(this.friend.id)
+        }
+      })
+
       this.newMessagesSubscription = this.chatService
         .getNewMessage()
         .subscribe((message: Message) => {
@@ -120,6 +126,13 @@ export class ChatComponent {
 
   openConversation(friend: User, index: number): void {
     this.selectedConversationIndex = index;
+
+    this.chatService.leaveConversation();
+
+    this.friend=friend;
+    this.friend$.next(this.friend);
+
+    this.messages = [];
   }
 
   ionViewDidLeave() {
