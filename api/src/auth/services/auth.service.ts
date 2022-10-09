@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { from, map, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Repository } from 'typeorm';
 import { User } from '../models/user.class';
 import { UserEntity } from '../models/user.entity';
@@ -98,6 +98,17 @@ export class AuthService {
           // create JWT - credentials
           return from(this.jwtService.signAsync({ user }));
         }
+      }),
+    );
+  }
+
+  getJwtUser(jwt: string): Observable<User | null> {
+    return from(this.jwtService.verifyAsync(jwt)).pipe(
+      map(({ user }: { user: User }) => {
+        return user;
+      }),
+      catchError(() => {
+        return of(null);
       }),
     );
   }
