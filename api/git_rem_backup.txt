@@ -1,0 +1,2 @@
+heroku	https://git.heroku.com/socmed-api.git (fetch)
+heroku	https://git.heroku.com/socmed-api.git (push)
